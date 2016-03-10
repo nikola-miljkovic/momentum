@@ -1,0 +1,19 @@
+{
+  "name": "momentum",
+  "version": "0.0.1",
+  "description": "momentum ========",
+  "main": "./src/client/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikola-miljkovic/momentum.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nikola-miljkovic/momentum/issues"
+  },
+  "homepage": "https://github.com/nikola-miljkovic/momentum#readme"
+}
