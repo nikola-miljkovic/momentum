@@ -39,5 +39,7 @@
 # Composer PHAR
 /composer.phar
 
+# nodejs
+./node_components/
 # idea ide
 /.idea/
