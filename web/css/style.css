@@ -1,0 +1,154 @@
+body {
+    font-family: 'Open Sans', serif;
+    font-size: 14px;
+    background: #FFF;
+}
+
+.section-nav {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background: #3fb0ac;
+}
+
+.well-card {
+    background-color: rgb(255, 255, 255);    
+}
+
+.section-list {
+    margin-bottom: 0em;
+    margin-top: 0em;
+    line-height: 2.2em;
+}
+
+#navigationBar {
+    background: #173e43;
+    border: 0px;
+    margin-bottom: 0px;
+}
+
+.content-field {
+    padding-top: 2em;
+    background: rgba(192, 192, 192, .1);
+}
+
+.section {
+    margin-left: -5px;
+    border-color: #FFF;
+    border-bottom: 0px solid;
+}
+
+ul li.section {
+    transition: all 0.15s ease-in-out 0s;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+ul li.section:hover {
+    border-bottom: 2px solid #FFF;
+}
+
+ul li.section a {
+    font-size: 14px;    
+    padding-left: 10px;
+    padding-right: 10px;
+    color: #FFF;
+}
+
+ul li.section a:hover {
+    color: #FFF;
+    text-decoration: none;
+}
+
+ul li.section a::selection {
+    color: #FFF;
+    text-decoration: none;    
+}
+
+ul li.section a:hover {
+    color: #FFF;
+    text-decoration: none;    
+}
+
+ul li.active {
+    border-bottom: 2px solid #FFF;  
+}
+
+ul li.active a {
+    font-weight: bold;
+}
+
+.upvote-button {
+    color: #AAB8C2;
+}
+
+.upvote-button-voted {
+    color: #2ECC40 
+}
+
+.upvote-button:hover {
+    color: #AAB8C2;    
+    text-decoration: none;
+}
+
+.upvote-button:hover span.glyphicon {
+    color: #173E43;
+}
+
+.upvote-button span {
+    font-weight: bold;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #FFF;
+}
+
+.list-group {
+    border-radius: 3px;
+}
+
+.post-link {
+    color: #AAB8C2;    
+}
+
+.post-link:hover {
+    color: #3FB0AC;
+}
+
+.well-card .row div {
+    padding: 5px 20px;
+}
+
+.date {
+    color: #AAB8C2;
+    font-weight: bold;
+}
+
+.list-group-item:first-child {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;    
+}
+
+.list-group-item:last-child {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.vote-count {
+    color: #AAB8C2;
+    font-weight: bold;
+}
+
+.vote-count small {
+    font-weight: 300;
+}
+
+.lead-text {
+    margin-bottom: 10px;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+.post-field {
+    background: rgba(192, 192, 192, .5);
+}

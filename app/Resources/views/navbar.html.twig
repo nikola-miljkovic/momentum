@@ -1,0 +1,35 @@
+{% block navbar %}
+    {% set route = app.request.attributes.get('_route') %}
+    {% macro section(text, path, route) %}
+        <li class="{{ route == path ? 'active'}} section"><a href="{{path(path)}}">{{text}}</a></li>
+    {% endmacro %}
+    {% import _self as navigation %}
+    
+    <div class="navbar navbar-inverse navbar-static-top" id = "navigationBar">   
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-offset-1 col-sm-10">
+                    <a href="#" class= "navbar-brand"><b style="font-family:verdana" style="font-size:10px">MOMENTUM</b></a>
+                    <button class= "navbar-toggle" data-toggle = "collapse" data-target = ".navbarHeaderCollapse"></button>
+                    <div class ="collapse navbar-collapse navHeaderCollapse">
+                        <ul class = "nav navbar-nav navbar-right">
+                            <li><a href="login.html">Log In</a></li>
+                            <li><a href="register.html">Register</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row section-nav">
+                <div class="col-md-offset-1 col-md-10">
+                    <ul class="list-inline section-list">
+                        {{ navigation.section('New', '_index', route) }}
+                        {{ navigation.section('Popular', '_popular', route) }}
+                        {{ navigation.section('In Progress', '_active', route) }}
+                        {{ navigation.section('Done', '_done', route) }}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+{% endblock %}
