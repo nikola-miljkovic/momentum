@@ -12,7 +12,7 @@
     {% include 'navbar.html.twig' %}
     <div class="container">
         <div class="row content-field">
-            <div class ="col-md-offset-1 col-md-7">
+            <div id="post-list" class="col-md-offset-1 col-md-7">
                 <ul class="list-group">
                     <li class="list-group-item">
                         <div class="post-field">
@@ -49,19 +49,26 @@
                         </div>
                     </li>
                     {% endfor %}
-                    
-
-                    
                 </ul>
             </div>
             <div class ="col-sm-3">
-                <ul style="list-style: none; padding-left: 0px; background-color: #FFF;" id = "lista">
-                    <li class="list-group" id="reklame">
-                        <div class="well">
-                            Ovdje cemo stavljati reklame ili nesto tako
-                            Lorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadadLorem ipsum dsadadad
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <div class="well-card">
+                            <ul class="timeline-list">
+                                <li>
+                                    <a href="z">Skupstina za 1 dan.</a>
+                                </li>
+                            </ul>
                         </div>	
                     </li>
+                    {% for i in 0..5 %}
+                    <li class="list-group-item">
+                        <div class="well-card">
+                            <a class="pull-left post-link" href="">#{{i}}</a>&nbsp; je stavljen na razmatranje. 
+                        </div>	
+                    </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
@@ -71,5 +78,6 @@
 {% block javascripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script type="js/bootstrap.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/dist/bundle.js"></script>
 {% endblock %}

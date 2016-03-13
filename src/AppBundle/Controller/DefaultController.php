@@ -12,13 +12,9 @@ class DefaultController extends Controller
      * @Route("/", name="_index")
      */
     public function indexAction(Request $request)
-    {   
-        $num = rand();
+    {
         // replace this example code with whatever you need
-        return $this->render('index.html.twig', array(
-            'base_dir' => "Najjaci smo",
-            'moje_ime' => $num
-        ));
+        return $this->render('index.html.twig');
     }
      
      /**
