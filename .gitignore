@@ -41,7 +41,7 @@
 
 # nodejs
 /node_components/
-/web/dist/
+
 
 # idea ide
 /.idea/
