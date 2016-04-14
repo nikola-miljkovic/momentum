@@ -11,9 +11,11 @@ body {
 }
 
 .well-card {
-    background-color: rgb(255, 255, 255);    
+    background-color: rgb(255, 255, 255);
 }
-
+.well-card-right{
+    padding: 0px;
+}
 .section-list {
     margin-bottom: 0em;
     margin-top: 0em;
@@ -225,4 +227,74 @@ textarea[name=main] {
 
 * { 
     outline: 0px solid transparent;
+}
+
+
+/*body{
+    margin-top:10px;
+    background: #e0e0e0;
+}*/
+
+.update-nag{
+    display: inline-block;
+    font-size: 14px;
+    text-align: left;
+    background-color: #fff;
+    height: 30px;
+   /* -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.2);*/
+   /* box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    margin-bottom: 10px;*/
+}
+
+.update-nag:hover{
+    cursor: pointer;
+  /*  -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.4);
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.3);*/
+}
+
+.update-nag > .update-split{
+    background: #337ab7;
+    width: 33px;
+    float: left;
+    color: #fff!important;
+    height: 100%;
+    text-align: center;
+}
+
+.update-nag > .update-split > .glyphicon{
+    position:relative;
+    top: calc(50% - 9px)!important; /* 50% - 3/4 of icon height */
+}
+.update-nag > .update-split.update-success{
+    background: #5cb85c!important;
+}
+
+.update-nag > .update-split.update-danger{
+    background: #d9534f!important;
+}
+
+.update-nag > .update-split.update-info{
+    background: #5bc0de!important;
+}
+
+
+
+.update-nag > .update-text{
+    line-height: 19px;
+    padding-top: 11px;
+    padding-left: 45px;
+    padding-right: 20px;
+}
+
+.icon-size-tree{
+    font-size:37px;
+
+}
+.icon-size-tree:hover{
+    cursor: pointer;
+}
+.time-timeline{
+    font-size: 10px;
+    font-style: italic;
+    color: #b0b0b0;;
 }
