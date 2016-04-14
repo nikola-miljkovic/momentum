@@ -1,0 +1,209 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Momentum{% endblock %}
+
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/font-styles.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <style>
+        .document-body {
+            background-color: #173e43;
+            font-size: 16px;
+        }
+        
+        .login-block {
+            border-radius: 3px;
+            background-color: #FFF;
+        }
+        
+        .login-block {
+            padding: 0;
+            margin: 0.5em;
+        }
+        
+        .login-block div:first-child {
+            text-align: center;
+            padding: 1em;
+            font-weight: 700;
+            color: #3fb0ac;
+        }
+        
+        .login-block div {
+            box-sizing: border-box;
+            border-bottom: 1px solid #DDD;
+        }
+        
+        .login-block div:last-child {
+            border-bottom: 0 solid #DDD;
+        }
+        
+        .login-block div label {
+            width: 35%;
+            padding: 1em;
+            margin: 0 -5px 0 0;
+            background: rgba(192, 192, 192, .1);
+        }
+        
+        .login-block div input {
+            width: 65%;
+            padding: 1em;
+            margin: 0;
+            border: 0;
+            background: rgba(192, 192, 192, .2);
+        }
+
+        .login-block div input:focus {
+            background: rgba(192, 192, 192, .4);
+        }
+
+        input[type="submit"],
+        button[type="submit"]{
+            border-radius: 3px;
+            border: 0;
+            width: 100%;
+            padding: 0.5em;
+            background: #3fb0ac;
+            color: #FFF;
+            font-size: 1.2em;
+        }
+
+        input[type="submit"]:hover,
+        button[type="submit"]:hover {
+            background-color: rgba(63, 176, 172, .4);
+        }
+
+        .forgot-something {
+            padding: 1em;
+            text-align: center;
+            font-size: 0.8em;
+        }
+        
+        .forgot-something a {
+            color: #AAB8C2;
+        }
+
+        .forgot-something a:hover {
+            color: #AAB8C2;
+        }
+
+        .error-list {
+            padding: 1em;
+            color: #ff395e;
+        }
+
+        .register-button {
+            border-radius: 3px;
+            border: 1px solid #AAB8C2;
+            color: #AAB8C2;
+            background: transparent;
+            padding: 0.5em;
+            width: 100%;
+            text-align: center;
+            display: block;
+        }
+
+        .register-button span {
+            margin-top: 4px;
+        }
+
+        .register-button:hover,
+        .register-button:focus {
+            text-decoration: none;
+            color: #FFF;
+            outline: none;
+            border: 1px solid #FFF;
+        }
+
+        .additional-login {
+            font-size: 1.2em;
+            color: #FFF;
+            line-height: 38px;
+        }
+
+        .additional-login > span {
+            margin-right: 20px;
+        }
+
+        .additional-login a {
+            margin-right: 10px;
+            border: 1px solid #FFF;
+            border-radius: 100%;
+            color: #FFF;
+            display: inline-block;
+            width: 38px;
+            height: 38px;
+            padding-top: 2px;
+        }
+
+        .additional-login a:hover,
+        .additional-login a:focus {
+            color: #FFF;
+            text-decoration: none;
+            outline: none;
+            background-color: rgba(63, 176, 172, .4);
+        }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center" style="color: #FFF; margin: 3em 0 2em 0;">
+                <svg style="width: 80px; height: 80px"></svg>
+                <span >MOMENTUM LOGO</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-offset-4 col-lg-4">
+                {{ form_start(form) }}
+                    <div class="login-block">
+                        <div>
+                            Access your profile                       
+                        </div>
+                        <div>
+                            {{ form_label(form.email) }}
+                            {{ form_widget(form.email) }}
+                        </div>
+                        <div>
+                            {{ form_label(form.password) }}
+                            {{ form_widget(form.password) }}
+                        </div>
+                        {% if form_errors is defined and form_errors|length > 0 %}
+                        <div class="error-list">
+                            <small>{{ form_errors }}</small>
+                        </div>
+                        {% endif %}
+                        <div class="forgot-something">
+                            <a href=""><small>Forgot something?</small></a>
+                        </div>
+                    </div>
+                    <div style="margin: 1em 0.5em">
+                        {{ form_widget(form.submit) }}
+                    </div>
+                {{ form_end(form) }}
+                <div class="row text-center">
+                    <div class="additional-login">
+                        <span>Or, log in with</span>
+                        <a href="#"><span class="icon-facebook" aria-hidden="true"></span></a>
+                        <a href="#"><span class="icon-twitter" aria-hidden="true"></span></a>
+                        <a href="#"><span class="icon-google" aria-hidden="true"></span></a>
+                    </div>
+                </div>
+                <div class="row" style="margin: 3em 2em;">
+                    <a class="register-button" href="{{ path('_register') }}">
+                        I would like to register
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block javascripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+{% endblock %}

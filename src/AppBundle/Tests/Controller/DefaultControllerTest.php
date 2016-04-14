@@ -13,6 +13,16 @@ class DefaultControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertContains('Welcome to Symfony', $crawler->filter('#container h1')->text());
+        $this->assertContains('New', $crawler->filter('.active.section')->text());
+    }
+    
+    public function testPopular()
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/popular');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertContains('Popular', $crawler->filter('.active.section')->text());
     }
 }
