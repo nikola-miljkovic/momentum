@@ -4,53 +4,67 @@ var classNames = require('classnames');
 var PostField = React.createClass({
     getInitialState: function() {
        return {
-           focused: false,
-           inputDivClasses: classNames({
-               'post-input': true,
-               'post-input-active': false
-           })
-       };
-    }, 
-    onFocus: function() {
-        this.setState({
            focused: true,
            inputDivClasses: classNames({
                'post-input': true,
                'post-input-active': true
            })
-       });
+       };
+    }, 
+    onFocus: function() {
+        /*this.setState({
+           focused: true,
+           inputDivClasses: classNames({
+               'post-input': true,
+               'post-input-active': true
+           })
+       });*/
     },
     onBlur: function() {
-        this.setState(this.getInitialState());
+        //this.setState(this.getInitialState());
     },
-    onKeyDown: function(event) {
-        console.log(event);
+    onSubmit: function(event) {
+        event.preventDefault();
+
+        var contentNode = this.refs['content'];
+        var form = {
+            'form[content]': contentNode.innerHTML,
+            'form[submit]': ''
+        };
+
+        jQuery.post('/ajax/post', form, function(data, status) {
+            console.log(status);
+            console.log(data);
+        }, 'json');
     },
     render: function() {
+        var placeholder = 'Share your problem, suggestion or wish...';
         var buttonStyle = this.state.focused ? 
         {
             visibility:  'visible',
             display: 'block'
-        } : 
+        } :
         {
             visibility: 'hidden',
             display: 'none'
         };
         
         return (
-            <div>
-                <div className="post-placeholder">
-                    Share your problem, suggestion or wish...
+            <form onBlur={this.onBlur}
+                  onFocus={this.onFocus}
+                  onSubmit={this.onSubmit}>
+                <div ref="placeholder" className="post-placeholder">
+                    { placeholder }
                 </div>
-                <div className={this.state.inputDivClasses} contentEditable={true} 
-                    onBlur={this.onBlur} onFocus={this.onFocus} onKeyDown={this.onKeyDown}/>
+                <div ref="content" contentEditable="true" className={this.state.inputDivClasses}>
+                </div>
                 <div className="row" style={buttonStyle}>
                     <button type="submit" className="post-button pull-right">
-                        <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        <span className="glyphicon glyphicon-pencil" aria-hidden="true"/>
                         Post!
                     </button>
                 </div> 
-            </div>
+            </form>
         );
     }
 });

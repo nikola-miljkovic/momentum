@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /** Table posts
@@ -24,6 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="posts")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class Post
 {
@@ -42,13 +44,21 @@ class Post
 
     /**
      * @ORM\Column(type="text")
+     *
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min = 40,
+     *     max = 240,
+     *     minMessage = "Post must be at least {{ limit }} characters long",
+     *     maxMessage = "Post cannot be longer than {{ limit }} characters"
+     * )
      */
     private $content;
 
     /**
      * @ORM\Column(name="posted_at", type="datetime")
      */
-    private $createdAt;
+    private $postedAt;
 
     /**
      * @ORM\Column(name="vote_count", type="integer")
@@ -63,8 +73,28 @@ class Post
     /**
     * @ORM\PrePersist
     */
-    public function setCreatedAtValue()
+    public function setPostedAtValue()
     {
-        $this->createdAt = new \DateTime();
+        $this->postedAt = new \DateTime();
+    }
+
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    public function setContent($content)
+    {
+        $this->content = $content;
     }
 }

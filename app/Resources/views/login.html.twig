@@ -158,32 +158,32 @@
         </div>
         <div class="row">
             <div class="col-lg-offset-4 col-lg-4">
-                {{ form_start(form) }}
+                <form action="{{ path('_login') }}" method="post">
                     <div class="login-block">
                         <div>
                             Access your profile                       
                         </div>
                         <div>
-                            {{ form_label(form.email) }}
-                            {{ form_widget(form.email) }}
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" name="_username" value="{{ last_username }}" />
                         </div>
                         <div>
-                            {{ form_label(form.password) }}
-                            {{ form_widget(form.password) }}
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" name="_password" />
                         </div>
-                        {% if form_errors is defined and form_errors|length > 0 %}
-                        <div class="error-list">
-                            <small>{{ form_errors }}</small>
-                        </div>
+                        {% if error %}
+                            <div class="error-list">
+                                <small>{{ error.messageKey|trans(error.messageData, 'security') }}</small>
+                            </div>
                         {% endif %}
                         <div class="forgot-something">
                             <a href=""><small>Forgot something?</small></a>
                         </div>
                     </div>
                     <div style="margin: 1em 0.5em">
-                        {{ form_widget(form.submit) }}
+                        <button type="submit">Log In</button>
                     </div>
-                {{ form_end(form) }}
+                </form>
                 <div class="row text-center">
                     <div class="additional-login">
                         <span>Or, log in with</span>

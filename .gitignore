@@ -40,7 +40,8 @@
 /composer.phar
 
 # nodejs
-/node_components/
+node_components/
+node_modules/
 
 
 # idea ide

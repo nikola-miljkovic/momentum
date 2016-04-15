@@ -14,8 +14,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-use AppBundle\ViewModel\LogIn;
-use AppBundle\ViewModel\Register;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
@@ -27,8 +25,16 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $loggedIn = 0;
+
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            $loggedIn = 1;
+        }
+
         // replace this example code with whatever you need
-        return $this->render('index.html.twig');
+        return $this->render('index.html.twig', array(
+            "loggedIn" => $loggedIn
+        ));
     }
 
     /**
@@ -57,51 +63,25 @@ class DefaultController extends Controller
 
     /**
      * @Route("/login", name="_login")
-     * @Method({"POST", "GET"})
      */
     public function loginAction(Request $request)
     {
-        $user = new User();
+        $authenticationUtils = $this->get('security.authentication_utils');
 
-        $form = $this->createFormBuilder($user)
-            ->add('email', EmailType::class, array('label' => 'Email'))
-            ->add('password', PasswordType::class)
-            ->add('submit', SubmitType::class, array('label' => 'Log In'))
-            ->getForm();
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
 
-        if ($request->isMethod('GET')) {
-            return $this->render('login.html.twig', array(
-                'form' => $form->createView(),
-            ));
-        }
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
 
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            //$token = new UsernamePasswordToken($user, $user->getPassword(), 'main', array());
-            $token = new UsernamePasswordToken($user, $user->getPassword(), 'main');
-            $token->
-            $this->get('security.token_storage')->setToken($token);
-
-            // Fire the login event
-            // Logging the user in above the way we do it doesn't do this automatically
-            $event = new InteractiveLoginEvent($request, $token);
-            $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
-
-            if ($token->isAuthenticated()) {
-                return $this->redirectToRoute('_index');
-            } else {
-                return $this->render('login.html.twig', array(
-                    'form' => $form->createView(),
-                    'form_errors' => $form->getErrors(true),
-                ));
-            }
-        } else {
-            return $this->render('login.html.twig', array(
-                'form' => $form->createView(),
-                'form_errors' => $form->getErrors(true),
-            ));
-        }
+        return $this->render(
+            'login.html.twig',
+            array(
+                // last username entered by the user
+                'last_username' => $lastUsername,
+                'error'         => $error,
+            )
+        );
     }
 
 

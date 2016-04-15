@@ -11,7 +11,7 @@ var VoteButton = React.createClass({
         event.preventDefault();
         var newState = {
             voted: !this.state.voted
-        }
+        };
         
         this.setState(newState);
     },
@@ -24,7 +24,7 @@ var VoteButton = React.createClass({
         
         return (
             <a href="#" className={aClass} onClick={this.onClick}>
-                <span className="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                <span className="glyphicon glyphicon-chevron-up" aria-hidden="true"/>
                 <span>&nbsp;{voteString}</span>
             </a>
         )

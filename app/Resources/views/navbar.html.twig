@@ -13,8 +13,13 @@
                     <button class= "navbar-toggle" data-toggle = "collapse" data-target = ".navbarHeaderCollapse"></button>
                     <div class ="collapse navbar-collapse navHeaderCollapse">
                         <ul class = "nav navbar-nav navbar-right">
+                            {% if app.user %}
+                            <li>    Logged in as {{ app.user.username }}</li>
+                            <li><a href="{{path('logout')}}">Logout</a></li>
+                            {% else %}
                             <li><a href="{{path('_login')}}">Log In</a></li>
-                            <li><a href="{{path('_register')}}"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz>Register</a></li>
+                            <li><a href="{{path('_register')}}">Register</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>

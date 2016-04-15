@@ -23,8 +23,11 @@ security:
             provider: maindb
             anonymous: ~
             form_login:
-              login_path: login
-              check_path: login
+              login_path: _login
+              check_path: _login
+            logout:
+              path: /logout
+              target: /
 
             # activate different ways to authenticate
 
