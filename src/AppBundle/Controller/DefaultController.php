@@ -25,15 +25,8 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $loggedIn = 0;
-
-        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            $loggedIn = 1;
-        }
-
-        // replace this example code with whatever you need
         return $this->render('index.html.twig', array(
-            "loggedIn" => $loggedIn
+            'postSource' => 'post_list_new'
         ));
     }
 
@@ -42,7 +35,9 @@ class DefaultController extends Controller
      */
     public function popularAction(Request $request)
     {
-        return $this->render('index.html.twig');
+        return $this->render('index.html.twig', array(
+            'postSource' => 'post_list_popular'
+        ));
     }
 
     /**

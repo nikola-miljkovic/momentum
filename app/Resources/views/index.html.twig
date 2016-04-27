@@ -13,43 +13,6 @@
     <div class="container">
         <div class="row content-field">
             <div id="post-list" class="col-md-offset-1 col-md-7">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <div class="post-field">
-                            <input type="text" class="form-control" placeholder="Share your problem, suggestion or wish...">  
-                        </div><!-- /input-group -->
-                    </li>
-                    {% for postId in 0..3 %}
-                    <li class="list-group-item">
-                        <div class="well-card">
-                            <div class="row">
-                                <div>
-                                    <a class="pull-left post-link" href=""><small>#{{postId}}</small></a>
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div>
-                                    <p class="lead-text">Ovo je post na koji jos korisnik nije glsao. Pise broj glasova i ima mogucnost da se glasa pritoskom na vote up. Ne znam da li da sve objave imaju istu velicinu prozora ili da se one podesavaju u zavisnosti od teksta, mada je svakako broj karaktera ogranicen. najvjerovatnije cu postaviti da je velicina posta ista za svaku objavu.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div>							
-                                    <a href="#" class="upvote-button">
-                                        <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
-                                        <span>Vote up!</span>
-                                    </a>
-                                    <span class="vote-count">
-                                        <small>•</small>
-                                        <span>123</span>
-                                    </span>
-                                <span class="pull-right date">Mar 7</span>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
             </div>
             <div class ="col-sm-3">
                 <ul class="list-group">
@@ -125,11 +88,10 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script type="application/javascript">
+        window.postSource = '{{ path(postSource) }}'
+    </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="/js/bootstrap.js"></script>
     <script src="/dist/bundle.js"></script>
-    <script type="application/javascript">
-        //window.POST_LIST = postList
-        window.LOGGED_IN = {{ loggedIn }};
-    </script>
 {% endblock %}

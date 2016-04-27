@@ -46,22 +46,12 @@
 
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(32);
-
 	var PostList = __webpack_require__(166);
 
-	ReactDOM.render(React.createElement(PostList, { items: [{
-	        voted: true,
-	        voteCount: 321,
-	        postDate: 'Mar 3',
-	        description: 'Ovo je post na koji jos korisnik nije glsao. Pise broj glasova i ima mogucnost da se glasa pritoskom na vote up. Ne znam da li da sve objave imaju istu velicinu prozora ili da se one podesavaju u zavisnosti od teksta, mada je svakako broj karaktera ogranicen. najvjerovatnije cu postaviti da je velicina posta ista za svaku objavu.',
-	        postId: 15
-	    }, {
-	        voted: false,
-	        voteCount: 412,
-	        postDate: 'Mar 5',
-	        description: 'Ovo je post na koji jos korisnik nije glsao. Pise broj glasova i ima mogucnost da se glasa pritoskom na vote up. Ne znam da li da sve objave imaju istu velicinu prozora ili da se one podesavaju u zavisnosti od teksta, mada je svakako broj karaktera ogranicen. najvjerovatnije cu postaviti da je velicina posta ista za svaku objavu.',
-	        postId: 9
-	    }] }), document.getElementById('post-list'));
+	// load server rendered javascript
+	var postSource = window.postSource;
+
+	ReactDOM.render(React.createElement(PostList, { source: postSource }), document.getElementById('post-list'));
 
 /***/ },
 /* 1 */
@@ -20022,14 +20012,48 @@
 /* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var React = __webpack_require__(1);
 	var PostInput = __webpack_require__(167);
 	var PostListItem = __webpack_require__(169);
+	var Spinner = __webpack_require__(172);
+
+	var loader = React.createElement(
+	    'li',
+	    { className: 'list-group-item' },
+	    React.createElement(
+	        'div',
+	        { className: 'text-center', style: { marginTop: '1.5em', marginBottom: '1.5em' } },
+	        React.createElement(Spinner, { spinnerName: 'wordpress', noFadeIn: true })
+	    )
+	);
 
 	var PostList = React.createClass({
 	    displayName: 'PostList',
 
+	    getInitialState: function () {
+	        return {
+	            loaded: false,
+	            posts: []
+	        };
+	    },
+	    componentDidMount: function () {
+	        this.serverRequest = $.get(this.props.source, function (result) {
+	            this.setState({
+	                loaded: true,
+	                posts: JSON.parse(result)
+	            });
+	        }.bind(this));
+	    },
+	    componentWillUnmount: function () {
+	        this.serverRequest.abort();
+	    },
 	    render: function () {
+	        var list = this.state.loaded === true ? this.state.posts.map(function (post) {
+	            return React.createElement(PostListItem, _extends({ key: post.id }, post));
+	        }) : loader;
+
 	        return React.createElement(
 	            'ul',
 	            { className: 'list-group' },
@@ -20038,9 +20062,7 @@
 	                { className: 'list-group-item' },
 	                React.createElement(PostInput, null)
 	            ),
-	            this.props.items.map(function (val) {
-	                return React.createElement(PostListItem, val);
-	            })
+	            list
 	        );
 	    }
 	});
@@ -20059,32 +20081,31 @@
 
 	    getInitialState: function () {
 	        return {
-	            focused: true,
-	            inputDivClasses: classNames({
-	                'post-input': true,
-	                'post-input-active': true
-	            })
+	            isFocused: false,
+	            isEmpty: true
 	        };
 	    },
 	    onFocus: function () {
-	        /*this.setState({
-	           focused: true,
-	           inputDivClasses: classNames({
-	               'post-input': true,
-	               'post-input-active': true
-	           })
-	        });*/
+	        this.setState({
+	            isFocused: true
+	        });
 	    },
 	    onBlur: function () {
-	        //this.setState(this.getInitialState());
+	        this.setState({
+	            isFocused: false
+	        });
+	    },
+	    onInput: function () {
+	        console.log(this.getContent());
+	        this.setState({
+	            isEmpty: this.getContent().length === 0
+	        });
 	    },
 	    onSubmit: function (event) {
-	        console.log(event);
 	        event.preventDefault();
 
-	        var contentNode = this.refs['content'];
 	        var form = {
-	            'form[content]': contentNode.innerHTML,
+	            'form[content]': this.getContent(),
 	            'form[submit]': ''
 	        };
 
@@ -20093,33 +20114,54 @@
 	            console.log(data);
 	        }, 'json');
 	    },
+	    onClickPlaceholder: function () {
+	        this.refs['content'].focus();
+	    },
+	    getContent: function () {
+	        if (this.refs['content'] === undefined) return '';
+	        return this.refs['content'].innerHTML;
+	    },
 	    render: function () {
-	        var placeholder = 'Share your problem, suggestion or wish...';
-	        var buttonStyle = this.state.focused ? {
-	            visibility: 'visible',
-	            display: 'block'
-	        } : {
-	            visibility: 'hidden',
-	            display: 'none'
+	        console.log('pzzz');
+	        var placeholder = this.state.isEmpty ? 'Share your problem, suggestion or wish...' : '';
+	        var isFocusedOrNotEmpty = this.state.isFocused || !this.state.isEmpty;
+	        var buttonStyle = {
+	            visibility: isFocusedOrNotEmpty ? 'visible' : 'hidden',
+	            display: isFocusedOrNotEmpty ? 'block' : 'none'
 	        };
+	        var inputClasses = classNames({
+	            'post-input': true,
+	            'post-input-active': isFocusedOrNotEmpty
+	        });
 
 	        return React.createElement(
 	            'form',
-	            { onBlur: this.onBlur,
-	                onFocus: this.onFocus,
-	                onSubmit: this.onSubmit },
+	            {
+	                onSubmit: this.onSubmit,
+	                onBlur: this.onBlur,
+	                onFocus: this.onFocus
+	            },
 	            React.createElement(
 	                'div',
-	                { ref: 'placeholder', className: 'post-placeholder' },
+	                {
+	                    className: 'post-placeholder',
+	                    unselectable: 'on',
+	                    onClick: this.onClickPlaceholder
+	                },
 	                placeholder
 	            ),
-	            React.createElement('div', { ref: 'content', contentEditable: 'true', className: this.state.inputDivClasses }),
+	            React.createElement('div', {
+	                ref: 'content',
+	                contentEditable: 'true',
+	                onInput: this.onInput,
+	                className: inputClasses
+	            }),
 	            React.createElement(
 	                'div',
 	                { className: 'row', style: buttonStyle },
 	                React.createElement(
 	                    'button',
-	                    { type: 'submit', className: 'post-button pull-right' },
+	                    { type: 'submit', className: 'post-button pull-right disabled' },
 	                    React.createElement('span', { className: 'glyphicon glyphicon-pencil', 'aria-hidden': 'true' }),
 	                    'Post!'
 	                )
@@ -20195,8 +20237,12 @@
 	var PostListItem = React.createClass({
 	    displayName: 'PostListItem',
 
+	    onVote: function (id) {
+	        $.post('/ajax/post_vote/' + id, function (data) {
+	            if (data.done === true) {}
+	        });
+	    },
 	    render: function () {
-	        console.log(this.props);
 	        return React.createElement(
 	            'li',
 	            { className: 'list-group-item' },
@@ -20209,7 +20255,7 @@
 	                    React.createElement(
 	                        'div',
 	                        null,
-	                        React.createElement(PostLink, { postId: this.props.postId })
+	                        React.createElement(PostLink, { id: this.props.id })
 	                    )
 	                ),
 	                React.createElement(
@@ -20221,7 +20267,7 @@
 	                        React.createElement(
 	                            'p',
 	                            { className: 'lead-text' },
-	                            this.props.description
+	                            this.props.content
 	                        )
 	                    )
 	                ),
@@ -20231,25 +20277,25 @@
 	                    React.createElement(
 	                        'div',
 	                        null,
-	                        React.createElement(PostVoteButton, { voted: this.props.voted }),
+	                        React.createElement(PostVoteButton, { voted: this.props.voted, onClick: this.onVote.bind(this, this.props.id) }),
 	                        React.createElement(
 	                            'span',
 	                            { className: 'vote-count' },
 	                            React.createElement(
 	                                'small',
 	                                null,
-	                                ' • '
+	                                '•'
 	                            ),
 	                            React.createElement(
 	                                'span',
-	                                null,
+	                                { style: { padding: '0em 0.4em' } },
 	                                this.props.voteCount
 	                            )
 	                        ),
 	                        React.createElement(
 	                            'span',
 	                            { className: 'pull-right date' },
-	                            this.props.postDate
+	                            this.props.date
 	                        )
 	                    )
 	                )
@@ -20277,27 +20323,26 @@
 	    },
 	    onClick: function (event) {
 	        event.preventDefault();
-	        var newState = {
-	            voted: !this.state.voted
-	        };
-
-	        this.setState(newState);
+	        this.props.onClick();
 	    },
 	    render: function () {
 	        var voteString = this.state.voted ? "Voted!" : "Vote up!";
-	        var aClass = classNames({
+	        var buttonClass = classNames({
 	            'upvote-button': true,
 	            'voted': this.state.voted
 	        });
 
 	        return React.createElement(
 	            'a',
-	            { href: '#', className: aClass, onClick: this.onClick },
+	            {
+	                href: '#',
+	                className: buttonClass,
+	                onClick: this.onClick
+	            },
 	            React.createElement('span', { className: 'glyphicon glyphicon-chevron-up', 'aria-hidden': 'true' }),
 	            React.createElement(
 	                'span',
-	                null,
-	                ' ',
+	                { style: { padding: '0em 0.4em' } },
 	                voteString
 	            )
 	        );
@@ -20316,8 +20361,8 @@
 	    displayName: 'PostLink',
 
 	    render: function () {
-	        var postId = this.props.postId;
-	        var postLink = '/post/' + postId;
+	        var id = this.props.id;
+	        var postLink = '/post/' + id;
 
 	        return React.createElement(
 	            'a',
@@ -20326,13 +20371,985 @@
 	                'small',
 	                null,
 	                '#',
-	                postId
+	                id
 	            )
 	        );
 	    }
 	});
 
 	module.exports = PostLink;
+
+/***/ },
+/* 172 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Generated by CoffeeScript 1.9.1
+	var React, cx;
+
+	React = __webpack_require__(1);
+
+	cx = __webpack_require__(173);
+
+	module.exports = React.createClass({
+	  displayName: "SpinKit",
+	  propTypes: {
+	    spinnerName: React.PropTypes.string.isRequired,
+	    noFadeIn: React.PropTypes.bool,
+	    overrideSpinnerClassName: React.PropTypes.string
+	  },
+	  getDefaultProps: function() {
+	    return {
+	      spinnerName: 'three-bounce',
+	      noFadeIn: false,
+	      overrideSpinnerClassName: ""
+	    };
+	  },
+	  render: function() {
+	    var classTests, classes;
+	    classTests = {
+	      "fade-in": !this.props.noFadeIn,
+	      spinner: this.props.overrideSpinnerClassName === ""
+	    };
+	    classTests[this.props.overrideSpinnerClassName] = this.props.overrideSpinnerClassName;
+	    classes = cx(classTests);
+	    if (this.props.className) {
+	      classes = classes + " " + this.props.className;
+	    }
+	    if (!this.props.noFadeIn) {
+	      __webpack_require__(174);
+	    }
+	    switch (this.props.spinnerName) {
+	      case "three-bounce":
+	        __webpack_require__(178);
+	        return React.createElement("div", React.__spread({}, this.props, {
+	          "className": "three-bounce " + classes
+	        }), React.createElement("div", {
+	          "className": "bounce1"
+	        }), React.createElement("div", {
+	          "className": "bounce2"
+	        }), React.createElement("div", {
+	          "className": "bounce3"
+	        }));
+	      case "double-bounce":
+	        __webpack_require__(180);
+	        return React.createElement("div", React.__spread({}, this.props, {
+	          "className": "double-bounce " + classes
+	        }), React.createElement("div", {
+	          "className": "double-bounce1"
+	        }), React.createElement("div", {
+	          "className": "double-bounce2"
+	        }));
+	      case "rotating-plane":
+	        __webpack_require__(182);
+	        return React.createElement("div", React.__spread({}, this.props, {
+	          "className": classes
+	        }), React.createElement("div", {
+	          "className": "rotating-plane"
+	        }));
+	      case "wave":
+	        __webpack_require__(184);
+	        return React.createElement("div", React.__spread({}, this.props, {
+	          "className": "wave " + classes
+	        }), React.createElement("div", {
+	          "className": "rect1"
+	        }), React.createElement("div", {
+	          "className": "rect2"
+	        }), React.createElement("div", {
+	          "className": "rect3"
+	        }), React.createElement("div", {
+	          "className": "rect4"
+	        }), React.createElement("div", {
+	          "className": "rect5"
+	        }));
+	      case "wandering-cubes":
+	        __webpack_require__(186);
+	        return React.createElement("div", React.__spread({}, this.props, {
+	          "className": "wandering-cubes " + classes
+	        }), React.createElement("div", {
+	          "className": "cube1"
+	        }), React.createElement("div", {
+	          "className": "cube2"
+	        }));
+	      case "pulse":
+	        __webpack_require__(188);
+	        return React.createElement("div", React.__spread({}, this.props, {
+	          "className": classes
+	        }), React.createElement("div", {
+	          "className": "pulse"
+	        }));
+	      case "chasing-dots":
+	        __webpack_require__(190);
+	        return React.createElement("div", React.__spread({}, this.props, {
+	          "className": classes
+	        }), React.createElement("div", {
+	          "className": "chasing-dots"
+	        }, React.createElement("div", {
+	          "className": "dot1"
+	        }), React.createElement("div", {
+	          "className": "dot2"
+	        })));
+	      case "circle":
+	        __webpack_require__(192);
+	        return React.createElement("div", React.__spread({}, this.props, {
+	          "className": "circle-wrapper " + classes
+	        }), React.createElement("div", {
+	          "className": "circle1 circle"
+	        }), React.createElement("div", {
+	          "className": "circle2 circle"
+	        }), React.createElement("div", {
+	          "className": "circle3 circle"
+	        }), React.createElement("div", {
+	          "className": "circle4 circle"
+	        }), React.createElement("div", {
+	          "className": "circle5 circle"
+	        }), React.createElement("div", {
+	          "className": "circle6 circle"
+	        }), React.createElement("div", {
+	          "className": "circle7 circle"
+	        }), React.createElement("div", {
+	          "className": "circle8 circle"
+	        }), React.createElement("div", {
+	          "className": "circle9 circle"
+	        }), React.createElement("div", {
+	          "className": "circle10 circle"
+	        }), React.createElement("div", {
+	          "className": "circle11 circle"
+	        }), React.createElement("div", {
+	          "className": "circle12 circle"
+	        }));
+	      case "cube-grid":
+	        __webpack_require__(194);
+	        return React.createElement("div", React.__spread({}, this.props, {
+	          "className": "cube-grid " + classes
+	        }), React.createElement("div", {
+	          "className": "cube"
+	        }), React.createElement("div", {
+	          "className": "cube"
+	        }), React.createElement("div", {
+	          "className": "cube"
+	        }), React.createElement("div", {
+	          "className": "cube"
+	        }), React.createElement("div", {
+	          "className": "cube"
+	        }), React.createElement("div", {
+	          "className": "cube"
+	        }), React.createElement("div", {
+	          "className": "cube"
+	        }), React.createElement("div", {
+	          "className": "cube"
+	        }), React.createElement("div", {
+	          "className": "cube"
+	        }));
+	      case "wordpress":
+	        __webpack_require__(196);
+	        return React.createElement("div", React.__spread({}, this.props, {
+	          "className": classes
+	        }), React.createElement("div", {
+	          "className": "wordpress"
+	        }, React.createElement("span", {
+	          "className": "inner-circle"
+	        })));
+	    }
+	  }
+	});
+
+
+/***/ },
+/* 173 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2015 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+
+	function classNames() {
+		var classes = '';
+		var arg;
+
+		for (var i = 0; i < arguments.length; i++) {
+			arg = arguments[i];
+			if (!arg) {
+				continue;
+			}
+
+			if ('string' === typeof arg || 'number' === typeof arg) {
+				classes += ' ' + arg;
+			} else if (Object.prototype.toString.call(arg) === '[object Array]') {
+				classes += ' ' + classNames.apply(null, arg);
+			} else if ('object' === typeof arg) {
+				for (var key in arg) {
+					if (!arg.hasOwnProperty(key) || !arg[key]) {
+						continue;
+					}
+					classes += ' ' + key;
+				}
+			}
+		}
+		return classes.substr(1);
+	}
+
+	// safely export classNames for node / browserify
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = classNames;
+	}
+
+	// safely export classNames for RequireJS
+	if (true) {
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+			return classNames;
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}
+
+
+/***/ },
+/* 174 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(175);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(177)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../css-loader/index.js!./fade-in.css", function() {
+				var newContent = require("!!./../../css-loader/index.js!./fade-in.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 175 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(176)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "@-webkit-keyframes fade-in {\n  0% {\n      opacity: 0;\n  }\n  50% {\n      opacity: 0;\n  }\n  100% {\n      opacity: 1;\n  }\n}\n\n@-moz-keyframes fade-in {\n  0% {\n      opacity: 0;\n  }\n  50% {\n      opacity: 0;\n  }\n  100% {\n      opacity: 1;\n  }\n}\n\n@-ms-keyframes fade-in {\n  0% {\n      opacity: 0;\n  }\n  50% {\n      opacity: 0;\n  }\n  100% {\n      opacity: 1;\n  }\n}\n\n@keyframes fade-in {\n  0% {\n      opacity: 0;\n  }\n  50% {\n      opacity: 0;\n  }\n  100% {\n      opacity: 1;\n  }\n}\n\n.fade-in {\n  -webkit-animation: fade-in 2s;\n  -moz-animation: fade-in 2s;\n  -o-animation: fade-in 2s;\n  -ms-animation: fade-in 2s;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 176 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		var blob = new Blob([css], { type: "text/css" });
+
+		var oldSrc = linkElement.href;
+
+		linkElement.href = URL.createObjectURL(blob);
+
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 178 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(179);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(177)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../css-loader/index.js!./three-bounce.css", function() {
+				var newContent = require("!!./../../css-loader/index.js!./three-bounce.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 179 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(176)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".three-bounce > div {\n  width: 18px;\n  height: 18px;\n  background-color: #333;\n\n  border-radius: 100%;\n  display: inline-block;\n  -webkit-animation: bouncedelay 1.4s infinite ease-in-out;\n  animation: bouncedelay 1.4s infinite ease-in-out;\n  /* Prevent first frame from flickering when animation starts */\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n}\n\n.three-bounce .bounce1 {\n  -webkit-animation-delay: -0.32s;\n  animation-delay: -0.32s;\n}\n\n.three-bounce .bounce2 {\n  -webkit-animation-delay: -0.16s;\n  animation-delay: -0.16s;\n}\n\n@-webkit-keyframes bouncedelay {\n  0%, 80%, 100% { -webkit-transform: scale(0.0) }\n  40% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes bouncedelay {\n  0%, 80%, 100% {\n    transform: scale(0.0);\n    -webkit-transform: scale(0.0);\n  } 40% {\n    transform: scale(1.0);\n    -webkit-transform: scale(1.0);\n  }\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 180 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(181);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(177)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../css-loader/index.js!./double-bounce.css", function() {
+				var newContent = require("!!./../../css-loader/index.js!./double-bounce.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 181 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(176)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".double-bounce {\n  width: 27px;\n  height: 27px;\n\n  position: relative;\n}\n\n.double-bounce1, .double-bounce2 {\n  width: 100%;\n  height: 100%;\n  border-radius: 50%;\n  background-color: #333;\n  opacity: 0.6;\n  position: absolute;\n  top: 0;\n  left: 0;\n\n  -webkit-animation: bounce 2.0s infinite ease-in-out;\n  animation: bounce 2.0s infinite ease-in-out;\n}\n\n.double-bounce2 {\n  -webkit-animation-delay: -1.0s;\n  animation-delay: -1.0s;\n}\n\n@-webkit-keyframes bounce {\n  0%, 100% { -webkit-transform: scale(0.0) }\n  50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes bounce {\n  0%, 100% {\n    transform: scale(0.0);\n    -webkit-transform: scale(0.0);\n  } 50% {\n    transform: scale(1.0);\n    -webkit-transform: scale(1.0);\n  }\n}\n\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 182 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(183);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(177)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../css-loader/index.js!./rotating-plane.css", function() {
+				var newContent = require("!!./../../css-loader/index.js!./rotating-plane.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 183 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(176)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".rotating-plane {\n  width: 27px;\n  height: 27px;\n  background-color: #333;\n\n  -webkit-animation: rotateplane 1.2s infinite ease-in-out;\n  animation: rotateplane 1.2s infinite ease-in-out;\n}\n\n@-webkit-keyframes rotateplane {\n  0% { -webkit-transform: perspective(120px) }\n  50% { -webkit-transform: perspective(120px) rotateY(180deg) }\n  100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }\n}\n\n@keyframes rotateplane {\n  0% {\n    transform: perspective(120px) rotateX(0deg) rotateY(0deg);\n    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg);\n  } 50% {\n    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);\n    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);\n  } 100% {\n    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);\n    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);\n  }\n}\n\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 184 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(185);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(177)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../css-loader/index.js!./wave.css", function() {
+				var newContent = require("!!./../../css-loader/index.js!./wave.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 185 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(176)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".wave {\n  width: 50px;\n  height: 27px;\n}\n\n.wave > div {\n  background-color: #333;\n  height: 100%;\n  width: 6px;\n  display: inline-block;\n\n  -webkit-animation: stretchdelay 1.2s infinite ease-in-out;\n  animation: stretchdelay 1.2s infinite ease-in-out;\n}\n\n.wave .rect2 {\n  -webkit-animation-delay: -1.1s;\n  animation-delay: -1.1s;\n}\n\n.wave .rect3 {\n  -webkit-animation-delay: -1.0s;\n  animation-delay: -1.0s;\n}\n\n.wave .rect4 {\n  -webkit-animation-delay: -0.9s;\n  animation-delay: -0.9s;\n}\n\n.wave .rect5 {\n  -webkit-animation-delay: -0.8s;\n  animation-delay: -0.8s;\n}\n\n@-webkit-keyframes stretchdelay {\n  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }\n  20% { -webkit-transform: scaleY(1.0) }\n}\n\n@keyframes stretchdelay {\n  0%, 40%, 100% {\n    transform: scaleY(0.4);\n    -webkit-transform: scaleY(0.4);\n  } 20% {\n    transform: scaleY(1.0);\n    -webkit-transform: scaleY(1.0);\n  }\n}\n\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(187);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(177)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../css-loader/index.js!./wandering-cubes.css", function() {
+				var newContent = require("!!./../../css-loader/index.js!./wandering-cubes.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 187 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(176)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".wandering-cubes {\n  width: 27px;\n  height: 27px;\n  position: relative;\n}\n\n.cube1, .cube2 {\n  background-color: #333;\n  width: 10px;\n  height: 10px;\n  position: absolute;\n  top: 0;\n  left: 0;\n\n  -webkit-animation: cubemove 1.8s infinite ease-in-out;\n  animation: cubemove 1.8s infinite ease-in-out;\n}\n\n.cube2 {\n  -webkit-animation-delay: -0.9s;\n  animation-delay: -0.9s;\n}\n\n@-webkit-keyframes cubemove {\n  25% { -webkit-transform: translateX(22px) rotate(-90deg) scale(0.5) }\n  50% { -webkit-transform: translateX(22px) translateY(22px) rotate(-180deg) }\n  75% { -webkit-transform: translateX(0px) translateY(22px) rotate(-270deg) scale(0.5) }\n  100% { -webkit-transform: rotate(-360deg) }\n}\n\n@keyframes cubemove {\n  25% { \n    transform: translateX(42px) rotate(-90deg) scale(0.5);\n    -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);\n  } 50% {\n    /* Hack to make FF rotate in the right direction */\n    transform: translateX(42px) translateY(42px) rotate(-179deg);\n    -webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);\n  } 50.1% {\n    transform: translateX(42px) translateY(42px) rotate(-180deg);\n    -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);\n  } 75% {\n    transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);\n    -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);\n  } 100% {\n    transform: rotate(-360deg);\n    -webkit-transform: rotate(-360deg);\n  }\n}\n\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 188 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(189);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(177)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../css-loader/index.js!./pulse.css", function() {
+				var newContent = require("!!./../../css-loader/index.js!./pulse.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 189 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(176)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".pulse {\n  width: 27px;\n  height: 27px;\n  background-color: #333;\n\n  border-radius: 100%;\n  -webkit-animation: scaleout 1.0s infinite ease-in-out;\n  animation: scaleout 1.0s infinite ease-in-out;\n}\n\n@-webkit-keyframes scaleout {\n  0% { -webkit-transform: scale(0.0) }\n  100% {\n    -webkit-transform: scale(1.0);\n    opacity: 0;\n  }\n}\n\n@keyframes scaleout {\n  0% {\n    transform: scale(0.0);\n    -webkit-transform: scale(0.0);\n  } 100% {\n    transform: scale(1.0);\n    -webkit-transform: scale(1.0);\n    opacity: 0;\n  }\n}\n\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 190 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(191);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(177)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../css-loader/index.js!./chasing-dots.css", function() {
+				var newContent = require("!!./../../css-loader/index.js!./chasing-dots.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 191 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(176)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".chasing-dots {\n  width: 27px;\n  height: 27px;\n  position: relative;\n\n  -webkit-animation: rotate 2.0s infinite linear;\n  animation: rotate 2.0s infinite linear;\n}\n\n.dot1, .dot2 {\n  width: 60%;\n  height: 60%;\n  display: inline-block;\n  position: absolute;\n  top: 0;\n  background-color: #333;\n  border-radius: 100%;\n\n  -webkit-animation: bounce 2.0s infinite ease-in-out;\n  animation: bounce 2.0s infinite ease-in-out;\n}\n\n.dot2 {\n  top: auto;\n  bottom: 0px;\n  -webkit-animation-delay: -1.0s;\n  animation-delay: -1.0s;\n}\n\n@-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg) }}\n@keyframes rotate {\n  100% {\n    transform: rotate(360deg);\n    -webkit-transform: rotate(360deg);\n  }\n}\n\n@-webkit-keyframes bounce {\n  0%, 100% { -webkit-transform: scale(0.0) }\n  50% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes bounce {\n  0%, 100% {\n    transform: scale(0.0);\n    -webkit-transform: scale(0.0);\n  } 50% {\n    transform: scale(1.0);\n    -webkit-transform: scale(1.0);\n  }\n}\n\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 192 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(193);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(177)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../css-loader/index.js!./circle.css", function() {
+				var newContent = require("!!./../../css-loader/index.js!./circle.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 193 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(176)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".circle-wrapper {\n  width: 22px;\n  height: 22px;\n  position: relative;\n}\n\n.circle {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n\n.circle:before {\n  content: '';\n  display: block;\n  margin: 0 auto;\n  width: 20%;\n  height: 20%;\n  background-color: #333;\n\n  border-radius: 100%;\n  -webkit-animation: bouncedelay 1.2s infinite ease-in-out;\n  animation: bouncedelay 1.2s infinite ease-in-out;\n  /* Prevent first frame from flickering when animation starts */\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n}\n\n.circle2  { -webkit-transform: rotate(30deg);  transform: rotate(30deg)  }\n.circle3  { -webkit-transform: rotate(60deg);  transform: rotate(60deg)  }\n.circle4  { -webkit-transform: rotate(90deg);  transform: rotate(90deg)  }\n.circle5  { -webkit-transform: rotate(120deg); transform: rotate(120deg) }\n.circle6  { -webkit-transform: rotate(150deg); transform: rotate(150deg) }\n.circle7  { -webkit-transform: rotate(180deg); transform: rotate(180deg) }\n.circle8  { -webkit-transform: rotate(210deg); transform: rotate(210deg) }\n.circle9  { -webkit-transform: rotate(240deg); transform: rotate(240deg) }\n.circle10 { -webkit-transform: rotate(270deg); transform: rotate(270deg) }\n.circle11 { -webkit-transform: rotate(300deg); transform: rotate(300deg) }\n.circle12 { -webkit-transform: rotate(330deg); transform: rotate(330deg) }\n\n.circle2:before  { -webkit-animation-delay: -1.1s; animation-delay: -1.1s }\n.circle3:before  { -webkit-animation-delay: -1.0s; animation-delay: -1.0s }\n.circle4:before  { -webkit-animation-delay: -0.9s; animation-delay: -0.9s }\n.circle5:before  { -webkit-animation-delay: -0.8s; animation-delay: -0.8s }\n.circle6:before  { -webkit-animation-delay: -0.7s; animation-delay: -0.7s }\n.circle7:before  { -webkit-animation-delay: -0.6s; animation-delay: -0.6s }\n.circle8:before  { -webkit-animation-delay: -0.5s; animation-delay: -0.5s }\n.circle9:before  { -webkit-animation-delay: -0.4s; animation-delay: -0.4s }\n.circle10:before { -webkit-animation-delay: -0.3s; animation-delay: -0.3s }\n.circle11:before { -webkit-animation-delay: -0.2s; animation-delay: -0.2s }\n.circle12:before { -webkit-animation-delay: -0.1s; animation-delay: -0.1s }\n\n@-webkit-keyframes bouncedelay {\n  0%, 80%, 100% { -webkit-transform: scale(0.0) }\n  40% { -webkit-transform: scale(1.0) }\n}\n\n@keyframes bouncedelay {\n  0%, 80%, 100% {\n    -webkit-transform: scale(0.0);\n    transform: scale(0.0);\n  } 40% {\n    -webkit-transform: scale(1.0);\n    transform: scale(1.0);\n  }\n}\n\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 194 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(195);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(177)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../css-loader/index.js!./cube-grid.css", function() {
+				var newContent = require("!!./../../css-loader/index.js!./cube-grid.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 195 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(176)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".cube-grid {\n  width:27px;\n  height:27px;\n}\n\n.cube {\n  width:33%;\n  height:33%;\n  background:#333;\n  float:left;\n  -webkit-animation: scaleDelay 1.3s infinite ease-in-out;\n  animation: scaleDelay 1.3s infinite ease-in-out;\n}\n\n/*\n * Spinner positions\n * 1 2 3\n * 4 5 6\n * 7 8 9\n */\n\n.spinner .cube:nth-child(1) { -webkit-animation-delay: 0.2s; animation-delay: 0.2s  }\n.spinner .cube:nth-child(2) { -webkit-animation-delay: 0.3s; animation-delay: 0.3s  }\n.spinner .cube:nth-child(3) { -webkit-animation-delay: 0.4s; animation-delay: 0.4s  }\n.spinner .cube:nth-child(4) { -webkit-animation-delay: 0.1s; animation-delay: 0.1s  }\n.spinner .cube:nth-child(5) { -webkit-animation-delay: 0.2s; animation-delay: 0.2s  }\n.spinner .cube:nth-child(6) { -webkit-animation-delay: 0.3s; animation-delay: 0.3s  }\n.spinner .cube:nth-child(7) { -webkit-animation-delay: 0.0s; animation-delay: 0.0s  }\n.spinner .cube:nth-child(8) { -webkit-animation-delay: 0.1s; animation-delay: 0.1s  }\n.spinner .cube:nth-child(9) { -webkit-animation-delay: 0.2s; animation-delay: 0.2s  }\n\n@-webkit-keyframes scaleDelay {\n  0%, 70%, 100% { -webkit-transform:scale3D(1.0, 1.0, 1.0) }\n  35%           { -webkit-transform:scale3D(0.0, 0.0, 1.0) }\n}\n\n@keyframes scaleDelay {\n  0%, 70%, 100% { -webkit-transform:scale3D(1.0, 1.0, 1.0); transform:scale3D(1.0, 1.0, 1.0) }\n  35%           { -webkit-transform:scale3D(1.0, 1.0, 1.0); transform:scale3D(0.0, 0.0, 1.0) }\n}\n\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 196 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(197);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(177)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../css-loader/index.js!./wordpress.css", function() {
+				var newContent = require("!!./../../css-loader/index.js!./wordpress.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 197 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(176)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".wordpress {\n  background: #333;\n  width: 27px;\n  height: 27px;\n  display: inline-block;\n  border-radius: 27px;\n  position: relative;\n  -webkit-animation: inner-circle 1s linear infinite;\n  animation: inner-circle 1s linear infinite;\n}\n\n.inner-circle {\n  display: block;\n  background: #fff;\n  width: 8px;\n  height: 8px;\n  position: absolute;\n  border-radius: 8px;\n  top: 5px;\n  left: 5px;\n}\n\n@-webkit-keyframes inner-circle {\n  0% { -webkit-transform: rotate(0); }\n  100% { -webkit-transform: rotate(360deg); }\n}\n\n@keyframes inner-circle {\n  0% { transform: rotate(0); -webkit-transform:rotate(0); }\n  100% { transform: rotate(360deg); -webkit-transform:rotate(360deg); }\n}\n\n", ""]);
+
+	// exports
+
 
 /***/ }
 /******/ ]);

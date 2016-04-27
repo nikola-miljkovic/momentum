@@ -2,11 +2,11 @@ var React = require('react');
 
 var PostLink = React.createClass({
     render: function() {
-        var postId = this.props.postId;
-        var postLink = '/post/' + postId;
+        var id = this.props.id;
+        var postLink = '/post/' + id;
         
         return (
-            <a className="pull-left post-link" href={postLink}><small>#{postId}</small></a>
+            <a className="pull-left post-link" href={postLink}><small>#{id}</small></a>
         )
     }
 });

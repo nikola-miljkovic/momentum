@@ -13,9 +13,11 @@ body {
 .well-card {
     background-color: rgb(255, 255, 255);
 }
+
 .well-card-right{
     padding: 0px;
 }
+
 .section-list {
     margin-bottom: 0em;
     margin-top: 0em;
@@ -30,7 +32,7 @@ body {
 
 .content-field {
     padding-top: 2em;
-    background: rgba(192, 192, 192, .1);
+    background: #F5F8FA;
 }
 
 .section {
@@ -79,21 +81,24 @@ ul li.active a {
     font-weight: bold;
 }
 
-.upvote-button {
-    color: #AAB8C2;
-}
-
-.upvote-button-voted {
-    color: #2ECC40 
-}
-
-.upvote-button:hover {
-    color: #AAB8C2;    
+.upvote-button:focus {
     text-decoration: none;
 }
 
-.upvote-button:hover span.glyphicon {
-    color: #173E43;
+.upvote-button,
+.upvote-button:hover,
+.upvote-button:focus,
+.upvote-button:active {
+    color: #AAB8C2;
+    outline: unset;
+}
+
+.upvote-button.voted,
+.upvote-button.voted:hover,
+.upvote-button.voted:focus,
+.upvote-button.voted:active {
+    color: #3fb0ac;
+    outline: unset;
 }
 
 .upvote-button span {
@@ -217,7 +222,13 @@ textarea[name=main] {
 .post-placeholder {
     padding: 6px 12px;
     line-height: 22px;
-    color: #AAB8C2;    
+    color: #3fb0ac;
+    height: 32px;
+
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+    user-select: none;
 }
 
 .post-button span.glyphicon {
@@ -226,7 +237,7 @@ textarea[name=main] {
 }
 
 * { 
-    outline: 0px solid transparent;
+    outline: unset;
 }
 
 
@@ -276,8 +287,6 @@ textarea[name=main] {
 .update-nag > .update-split.update-info{
     background: #5bc0de!important;
 }
-
-
 
 .update-nag > .update-text{
     line-height: 19px;

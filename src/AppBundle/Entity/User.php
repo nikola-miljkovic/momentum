@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: nikola-miljkovic
- * Date: 4/4/16
- * Time: 10:27 PM
- */
 
 namespace AppBundle\Entity;
 

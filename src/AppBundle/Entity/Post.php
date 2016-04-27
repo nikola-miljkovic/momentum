@@ -1,17 +1,12 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: nikola-miljkovic
- * Date: 4/11/16
- * Time: 1:22 PM
- */
 
 namespace AppBundle\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
-/** Table posts
+/** 
+ * Table posts
  * IDPost
  * IDUser
  * Content
@@ -26,8 +21,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="posts")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\PostRepository")
  */
-class Post
+class Post implements \JsonSerializable
 {
     /**
      * @ORM\Column(type="integer")
@@ -48,7 +44,7 @@ class Post
      * @Assert\NotBlank()
      * @Assert\Length(
      *     min = 40,
-     *     max = 240,
+     *     max = 400,
      *     minMessage = "Post must be at least {{ limit }} characters long",
      *     maxMessage = "Post cannot be longer than {{ limit }} characters"
      * )
@@ -78,6 +74,16 @@ class Post
         $this->postedAt = new \DateTime();
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
     public function getUser()
     {
         return $this->user;
@@ -96,5 +102,17 @@ class Post
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+    function jsonSerialize()
+    {
+        return array(
+            'id' => $this->id,
+            'content' => $this->content,
+            'date' => date_format($this->postedAt, 'g:ia l jS F Y'),
+            'voteCount' => $this->voteCount,
+            'state' => $this->state,
+            'voted' => true,
+        );
     }
 }

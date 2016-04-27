@@ -1,7 +1,6 @@
 {% block navbar %}
-    {% set route = app.request.attributes.get('_route') %}
     {% macro section(text, path, route) %}
-        <li class="{{ route == path ? 'active'}} section"><a href="{{path(path)}}">{{text}}</a></li>
+        <li class="{{ app.request.attributes.get('_route') == path ? 'active'}} section"><a href="{{path(path)}}">{{text}}</a></li>
     {% endmacro %}
     {% import _self as navigation %}
     
@@ -27,10 +26,10 @@
             <div class="row section-nav">
                 <div class="col-md-offset-1 col-md-10">
                     <ul class="list-inline section-list">
-                        {{ navigation.section('New', '_index', route) }}
-                        {{ navigation.section('Popular', '_popular', route) }}
-                        {{ navigation.section('In Progress', '_active', route) }}
-                        {{ navigation.section('Done', '_done', route) }}
+                        {{ navigation.section('New', '_index') }}
+                        {{ navigation.section('Popular', '_popular') }}
+                        {{ navigation.section('In Progress', '_active') }}
+                        {{ navigation.section('Done', '_done') }}
                     </ul>
                 </div>
             </div>

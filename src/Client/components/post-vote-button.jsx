@@ -9,23 +9,23 @@ var VoteButton = React.createClass({
     },
     onClick: function(event) {
         event.preventDefault();
-        var newState = {
-            voted: !this.state.voted
-        };
-        
-        this.setState(newState);
+        this.props.onClick();
     },
     render: function() {
         var voteString = this.state.voted ? "Voted!" : "Vote up!";
-        var aClass = classNames({
+        var buttonClass = classNames({
             'upvote-button': true,
             'voted': this.state.voted
         });
         
         return (
-            <a href="#" className={aClass} onClick={this.onClick}>
+            <a
+                href="#"
+                className={buttonClass}
+                onClick={this.onClick}
+            >
                 <span className="glyphicon glyphicon-chevron-up" aria-hidden="true"/>
-                <span>&nbsp;{voteString}</span>
+                <span style={{padding: '0em 0.4em'}}>{voteString}</span>
             </a>
         )
     }
