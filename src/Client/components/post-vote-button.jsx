@@ -4,15 +4,20 @@ var classNames = require('classnames');
 var VoteButton = React.createClass({
     getInitialState: function() {
         return {
-            voted: this.props.voted
+            voted: this.props.voted === '1'
         }
+    },
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({
+            voted: nextProps.voted === '1'
+        });
     },
     onClick: function(event) {
         event.preventDefault();
         this.props.onClick();
     },
     render: function() {
-        var voteString = this.state.voted ? "Voted!" : "Vote up!";
+        var voteString = this.state.voted ? "Voted" : "Vote up";
         var buttonClass = classNames({
             'upvote-button': true,
             'voted': this.state.voted

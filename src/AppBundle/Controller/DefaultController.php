@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\ORM\Query\QueryException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -120,19 +122,26 @@ class DefaultController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            // encode password
-            $password = $this->get('security.password_encoder')
-                ->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
+            try {
+                // encode password
+                $password = $this->get('security.password_encoder')
+                    ->encodePassword($user, $user->getPassword());
+                $user->setPassword($password);
 
-            // persist
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+                // persist
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($user);
+                $em->flush();
 
-            return $this->render('register.html.twig', array(
-                'form' => $form->createView(),
-            ));
+                return $this->render('register.html.twig', array(
+                    'form' => $form->createView(),
+                ));
+            } catch(UniqueConstraintViolationException $exception) {
+                return $this->render('register.html.twig', array(
+                    'form' => $form->createView(),
+                    'form_errors' => 'Username or email is already in use.',
+                ));
+            }
         } else {
             return $this->render('register.html.twig', array(
                 'form' => $form->createView(),

@@ -7,6 +7,24 @@ use Doctrine\ORM\Query;
 
 class PostRepository extends EntityRepository
 {
+    public function findOneWithVote($id, User $user)
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->select(array('p.id', 'p.content', 'p.postedAt', 'p.voteCount', 'p.state'))
+            ->addSelect('(SELECT v.active
+                           FROM AppBundle:Vote v
+                           WHERE v.post = p.id 
+                           AND v.user = :user_id)
+                           as voted')
+            ->where('p.id = :post_id')
+            ->setParameter('post_id', $id)
+            ->setParameter('user_id', $user->getId())
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult(Query::HYDRATE_ARRAY);
+    }
+
     public function findAllOrderById(int $offset = 0)
     {
         return $this->findBy(

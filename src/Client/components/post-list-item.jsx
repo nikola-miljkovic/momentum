@@ -3,12 +3,21 @@ var PostVoteButton = require('./post-vote-button.jsx');
 var PostLink = require('./post-link.jsx');
 
 var PostListItem = React.createClass({
+    getInitialState: function() {
+        return {
+            voted: this.props.voted,
+            voteCount: this.props.voteCount
+        }
+    },
     onVote: function(id) {
         $.post('/ajax/post_vote/' + id, function(data) {
-            if(data.done === true)
-            {
-            }
-        });
+            var newPostData = JSON.parse(data);
+            this.setState({
+                voted: newPostData.voted,
+                voteCount: newPostData.voteCount
+            })
+        }.bind(this)
+        );
     },
     render: function() {
         return (
@@ -28,10 +37,10 @@ var PostListItem = React.createClass({
                     </div>
                     <div className="row">
                         <div>							
-                            <PostVoteButton voted={this.props.voted} onClick={this.onVote.bind(this, this.props.id)}></PostVoteButton>
+                            <PostVoteButton voted={this.state.voted} onClick={this.onVote.bind(this, this.props.id)}></PostVoteButton>
                             <span className="vote-count">
                                 <small>•</small>
-                                <span style={{padding: '0em 0.4em'}}>{this.props.voteCount}</span>
+                                <span style={{padding: '0em 0.4em'}}>{this.state.voteCount}</span>
                             </span>
                             <span className="pull-right date">{this.props.date}</span>
                         </div>

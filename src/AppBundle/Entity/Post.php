@@ -112,7 +112,7 @@ class Post implements \JsonSerializable
             'date' => date_format($this->postedAt, 'g:ia l jS F Y'),
             'voteCount' => $this->voteCount,
             'state' => $this->state,
-            'voted' => true,
+            'voted' => false,
         );
     }
 }

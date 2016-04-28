@@ -20237,10 +20237,20 @@
 	var PostListItem = React.createClass({
 	    displayName: 'PostListItem',
 
+	    getInitialState: function () {
+	        return {
+	            voted: this.props.voted,
+	            voteCount: this.props.voteCount
+	        };
+	    },
 	    onVote: function (id) {
 	        $.post('/ajax/post_vote/' + id, function (data) {
-	            if (data.done === true) {}
-	        });
+	            var newPostData = JSON.parse(data);
+	            this.setState({
+	                voted: newPostData.voted,
+	                voteCount: newPostData.voteCount
+	            });
+	        }.bind(this));
 	    },
 	    render: function () {
 	        return React.createElement(
@@ -20277,7 +20287,7 @@
 	                    React.createElement(
 	                        'div',
 	                        null,
-	                        React.createElement(PostVoteButton, { voted: this.props.voted, onClick: this.onVote.bind(this, this.props.id) }),
+	                        React.createElement(PostVoteButton, { voted: this.state.voted, onClick: this.onVote.bind(this, this.props.id) }),
 	                        React.createElement(
 	                            'span',
 	                            { className: 'vote-count' },
@@ -20289,7 +20299,7 @@
 	                            React.createElement(
 	                                'span',
 	                                { style: { padding: '0em 0.4em' } },
-	                                this.props.voteCount
+	                                this.state.voteCount
 	                            )
 	                        ),
 	                        React.createElement(
@@ -20318,15 +20328,20 @@
 
 	    getInitialState: function () {
 	        return {
-	            voted: this.props.voted
+	            voted: this.props.voted === '1'
 	        };
+	    },
+	    componentWillReceiveProps: function (nextProps) {
+	        this.setState({
+	            voted: nextProps.voted === '1'
+	        });
 	    },
 	    onClick: function (event) {
 	        event.preventDefault();
 	        this.props.onClick();
 	    },
 	    render: function () {
-	        var voteString = this.state.voted ? "Voted!" : "Vote up!";
+	        var voteString = this.state.voted ? "Voted" : "Vote up";
 	        var buttonClass = classNames({
 	            'upvote-button': true,
 	            'voted': this.state.voted

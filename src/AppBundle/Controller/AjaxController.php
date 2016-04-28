@@ -5,8 +5,10 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Post;
 use AppBundle\Entity\Vote;
 use Doctrine\ORM\Query\QueryException;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -22,11 +24,10 @@ class AjaxController extends Controller
     /**
     * @Route("/post", name="post")
     * @Method({"POST"})
+    * @Security("is_granted('ROLE_USER')")
     */
     public function postAction(Request $request)
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-        
         if (!$request->isXmlHttpRequest()) {
             return new JsonResponse(array('message' => 'You can access this only using Ajax!'), 400);
         }
@@ -96,15 +97,18 @@ class AjaxController extends Controller
     }
 
     /**
-     * @Route("/post_vote/{post_id}", name="post_vote")
+     * @Route("/post_vote/{post_id}", name="post_vote", requirements={
+     *         "post_id": "\d+"
+     *     }
+     *  )
      * @Method({"POST"})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function postVoteAction($post_id)
     {
         $em = $this->getDoctrine()->getManager();
         $em->getConnection()->beginTransaction();
 
-        // TODO: Validation and proper response message
         try {
             $vote = $em
                 ->getRepository('AppBundle:Vote')
@@ -135,9 +139,9 @@ class AjaxController extends Controller
             $em->getConnection()->rollBack();
         }
 
-        // TODO: return post!
-        return new JsonResponse(array(
-            "done" => true
-        ));
+        $post = $em->getRepository('AppBundle:Post')
+            ->findOneWithVote($post_id, $this->getUser());
+
+        return new JsonResponse(json_encode($post));
     }
 }
