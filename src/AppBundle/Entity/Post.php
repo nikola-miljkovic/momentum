@@ -21,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="posts")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
- * @ORM\Entity(repositoryClass="AppBundle\Entity\PostRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PostRepository")
  */
 class Post implements \JsonSerializable
 {
@@ -60,11 +60,6 @@ class Post implements \JsonSerializable
      * @ORM\Column(name="vote_count", type="integer")
      */
     private $voteCount = 0;
-
-    /**
-     * @ORM\Column(name="state", type="smallint")
-     */
-    private $state = 0;
     
     /**
     * @ORM\PrePersist
@@ -111,7 +106,6 @@ class Post implements \JsonSerializable
             'content' => $this->content,
             'date' => date_format($this->postedAt, 'g:ia l jS F Y'),
             'voteCount' => $this->voteCount,
-            'state' => $this->state,
             'voted' => false,
         );
     }

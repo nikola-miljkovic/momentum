@@ -2,27 +2,16 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Vote
- * PostID
- * UserID
- * Date
- * Active(def = 1)
- */
-
-/**
- * Class Vote
- * @package AppBundle\Entity
+ * Comment
  *
- * @ORM\Table(name="votes")
+ * @ORM\Table(name="comment")
  * @ORM\HasLifecycleCallbacks
- * @ORM\Entity(repositoryClass="AppBundle\Repository\VoteRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CommentRepository")
  */
-class Vote
+class Comment
 {
     /**
      * @ORM\ManyToOne(targetEntity="Post")
@@ -44,9 +33,11 @@ class Vote
     private $postedAt;
 
     /**
-     * @ORM\Column(name="active", type="boolean")
+     * @var string
+     *
+     * @ORM\Column(name="comment", type="string", length=511)
      */
-    private $active = true;
+    private $comment;
 
     /**
      * @ORM\PrePersist()
@@ -54,27 +45,6 @@ class Vote
     public function setPostedAtValue()
     {
         $this->postedAt = new \DateTime();
-    }
-
-    /**
-     * @ORM\PostPersist()
-     * @ORM\PostUpdate()
-     */
-    public function updatePostVoteCount(LifecycleEventArgs $event)
-    {
-        $vote = $event->getEntity();
-        $postRepository = $event
-            ->getEntityManager()
-            ->getRepository('AppBundle:Post');
-
-        if ($this->active)
-        {
-            $postRepository->updateIncVoteCount($vote->getPost());
-        }
-        else
-        {
-            $postRepository->updateDecVoteCount($vote->getPost());
-        }
     }
 
     public function getPost()
@@ -107,14 +77,15 @@ class Vote
         $this->postedAt = $postedAt;
     }
 
-    public function getActive()
+    public function setComment($comment)
     {
-        return $this->active;
+        $this->comment = $comment;
+
+        return $this;
     }
 
-    public function setActive($active)
+    public function getComment()
     {
-        $this->active = $active;
+        return $this->comment;
     }
 }
-

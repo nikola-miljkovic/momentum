@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * AppBundle\Entity\User
  *
  * @ORM\Table(name="users")
- * @ORM\Entity(repositoryClass="AppBundle\Entity\UserRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
 class User implements UserInterface, \Serializable
 {
@@ -64,14 +65,23 @@ class User implements UserInterface, \Serializable
     private $email;
 
     /**
-     * @ORM\Column(name="role", type="integer")
+     * @ORM\Column(name="roles", type="array")
      */
-    private $role = 0;
+    private $roles;
+
+    public function __construct()
+    {
+        $this->roles = array('ROLE_USER');
+    }
 
     public function getRoles()
     {
-        // TODO: Implement symfony2 style roles based on our needs
-        return array('ROLE_USER');
+        return $this->roles;
+    }
+
+    public function addRole($role)
+    {
+        return $this->roles->add($role);
     }
 
     public function getId()
@@ -173,8 +183,6 @@ class User implements UserInterface, \Serializable
             $this->id,
             $this->username,
             $this->password,
-            // see section on salt below
-            // $this->salt
         ) = unserialize($serialized);
     }
 }

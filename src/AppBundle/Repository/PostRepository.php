@@ -1,8 +1,10 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace AppBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use AppBundle\Entity\User;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 
 class PostRepository extends EntityRepository
@@ -11,7 +13,7 @@ class PostRepository extends EntityRepository
     {
         return $this
             ->createQueryBuilder('p')
-            ->select(array('p.id', 'p.content', 'p.postedAt', 'p.voteCount', 'p.state'))
+            ->select(array('p.id', 'p.content', 'p.postedAt', 'p.voteCount'))
             ->addSelect('(SELECT v.active
                            FROM AppBundle:Vote v
                            WHERE v.post = p.id 
@@ -37,20 +39,24 @@ class PostRepository extends EntityRepository
 
     public function findAllWithVotedOrderById(int $offset, User $user)
     {
-        return $this
-            ->createQueryBuilder('p')
-            ->select(array('p.id', 'p.content', 'p.postedAt', 'p.voteCount', 'p.state'))
-            ->addSelect('(SELECT v.active
+        try {
+            return $this
+                ->createQueryBuilder('p')
+                ->select(array('p.id', 'p.content', 'p.postedAt', 'p.voteCount'))
+                ->addSelect('(SELECT v.active
                            FROM AppBundle:Vote v
                            WHERE v.post = p.id 
                            AND v.user = :user_id)
                            as voted')
-            ->orderBy('p.id', 'DESC')
-            ->setParameter('user_id', $user->getId())
-            ->setFirstResult($offset)
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getScalarResult();
+                ->orderBy('p.id', 'DESC')
+                ->setParameter('user_id', $user->getId())
+                ->setFirstResult($offset)
+                ->setMaxResults(10)
+                ->getQuery()
+                ->getScalarResult();
+        } catch (\Exception $e) {
+            throw new NoResultException;
+        }
     }
 
     public function findAllOrderByVoteCount(int $offset = 0)
@@ -67,7 +73,7 @@ class PostRepository extends EntityRepository
     {
         return $this
             ->createQueryBuilder('p')
-            ->select(array('p.id', 'p.content', 'p.postedAt', 'p.voteCount', 'p.state'))
+            ->select(array('p.id', 'p.content', 'p.postedAt', 'p.voteCount'))
             ->addSelect('(SELECT v.active
                            FROM AppBundle:Vote v
                            WHERE v.post = p.id 

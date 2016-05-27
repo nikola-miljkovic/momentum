@@ -2,8 +2,8 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Post;
-use AppBundle\Entity\Vote;
+use AppBundle\Repository\Post;
+use AppBundle\Repository\Vote;
 use Doctrine\ORM\Query\QueryException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -66,7 +66,8 @@ class AjaxController extends Controller
 
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED'))
         {
-            $posts = $em->getRepository('AppBundle:Post')->findAllWithVotedOrderById($offset, $this->getUser());
+            $user = $this->getUser();
+            $posts = $em->getRepository('AppBundle:Post')->findAllWithVotedOrderById($offset, $user);
         }
         else
         {
@@ -96,6 +97,19 @@ class AjaxController extends Controller
         return new JsonResponse(json_encode($posts));
     }
 
+    /**
+     * @Route("/post_list_active/{offset}", defaults={"offset" = 0}, name="post_list_active")
+     * @Method({"GET"})
+     */
+    public function postListActiveAction(int $offset)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $posts = $em
+            ->getRepository('AppBundle:InProgressPost')
+            ->findInProgressPostsOrderByDate($offset);
+        return new JsonResponse(json_encode($posts));
+    }
+    
     /**
      * @Route("/post_vote/{post_id}", name="post_vote", requirements={
      *         "post_id": "\d+"
