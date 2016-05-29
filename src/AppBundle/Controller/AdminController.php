@@ -7,6 +7,8 @@ use AppBundle\Entity\InProgressPost;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class AdminController
@@ -20,30 +22,38 @@ class AdminController extends Controller
      */
     public function indexAction()
     {
+        $formSearch = $this->createFormBuilder()
+            ->add('searchUser', TextType::class, array('attr' =>
+                array('placeholder' => 'Search users')))
+            ->add('searchPost', TextType::class, array('attr' =>
+                array('placeholder' => 'Search posts')))
+            ->getForm();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $posts = $em->getRepository('AppBundle:Post')
+            ->findAllOrderById(0);
+
+        $users = $em->getRepository('AppBundle:User')
+            ->findAll();
+
         return $this->render('AppBundle:Admin:index.html.twig', array(
-            // ...
+            'form' => $formSearch->createView(),
+            'posts' => $posts,
+            'users' => $users,
         ));
     }
-    
+
     /**
-     * @Route("/set_in_progress/{post_id}")
+     * @Route("/posts/{offset}")
      */
-    public function setInProgressAction($post_id) 
+    public function postsAction($offset)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $inProgressPost = new InProgressPost();
+        $posts = $em->getRepository('AppBundle:Post')
+            ->findAllOrderById(0);
 
-        $inProgressPost->setPost($em->getReference('AppBundle:Post', $post_id));
-        $inProgressPost->setGovernment($this->getUser());
-        $inProgressPost->setComment("Test");
-
-        $em->persist($inProgressPost);
-        $em->flush();
-
-        return $this->render('AppBundle:Admin:index.html.twig', array(
-            "message" => "done"
-        ));
+        return new JsonResponse(json_encode($posts));
     }
-
 }
