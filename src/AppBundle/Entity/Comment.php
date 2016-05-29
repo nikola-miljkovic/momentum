@@ -15,7 +15,7 @@ class Comment
 {
     /**
      * @ORM\ManyToOne(targetEntity="Post")
-     * @ORM\JoinColumn(name="post_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="post_id", referencedColumnName="id", onDelete="CASCADE")
      * @ORM\Id()
      */
     private $post;

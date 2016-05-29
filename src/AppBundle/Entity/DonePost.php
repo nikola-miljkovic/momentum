@@ -9,12 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="done_post")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\DonePostRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class DonePost
 {
     /**
      * @ORM\ManyToOne(targetEntity="Post")
-     * @ORM\JoinColumn(name="post_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="post_id", referencedColumnName="id", onDelete="CASCADE")
      * @ORM\Id()
      */
     private $post;
@@ -32,6 +33,24 @@ class DonePost
      * @ORM\Id()
      */
     private $user;
+
+    /**
+     * @ORM\Column(name="done_at", type="datetime")
+     */
+    private $doneAt;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setDoneAt()
+    {
+        $this->doneAt= new \DateTime();
+    }
+
+    public function getPostedAt()
+    {
+        return $this->doneAt;
+    }
 
     public function setPost($post)
     {

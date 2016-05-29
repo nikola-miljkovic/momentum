@@ -56,4 +56,106 @@ class AdminController extends Controller
 
         return new JsonResponse(json_encode($posts));
     }
+
+    /**
+     * @Route("/promote/{username}")
+     */
+    public function promoteAction($username) {
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $em->getRepository('AppBundle:User')
+            ->findOneBy(array(
+                'username' => $username,
+            ));
+
+        if ($user == null)
+            return new JsonResponse(json_encode(array(
+                'promoted' => false
+            )));
+
+        $roles = $user->getRoles();
+
+        if (in_array('ROLE_GOVERNMENT', $roles)) {
+            $user->setRoles(array('ROLE_ADMIN', 'ROLE_GOVERNMENT'));
+        } else if (in_array('ROLE_USER', $roles)) {
+            $user->setRoles(array('ROLE_GOVERNMENT'));
+        }
+
+        $em->persist($user);
+        $em->flush();
+
+        return new JsonResponse(json_encode(array('promoted' => true)));
+    }
+
+    /**
+     * @Route("/demote/{username}")
+     */
+    public function demoteAction($username) {
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $em->getRepository('AppBundle:User')
+            ->findOneBy(array(
+                'username' => $username,
+            ));
+
+        if ($user == null)
+            return new JsonResponse(json_encode(array(
+                'promoted' => false
+            )));
+
+        $roles = $user->getRoles();
+
+        if (in_array('ROLE_GOVERNMENT', $roles)) {
+            $user->setRoles(array('ROLE_USER'));
+        } else if (in_array('ROLE_ADMIN', $roles)) {
+            $user->setRoles(array('ROLE_USER'));
+        }
+
+        $em->persist($user);
+        $em->flush();
+
+        return new JsonResponse(json_encode(array('promoted' => true)));
+    }
+
+    /**
+     * @Route("/delete/{username}")
+     */
+    public function deleteAction($username) {
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $em->getRepository('AppBundle:User')
+            ->findOneBy(array(
+                'username' => $username,
+            ));
+
+        if ($user == null)
+            return new JsonResponse(json_encode(array(
+                'deleted' => false
+            )));
+
+        $em->remove($user);
+        $em->flush();
+
+        return new JsonResponse(json_encode(array('deleted' => true)));
+    }
+
+    /**
+     * @Route("/post_delete/{post_id}")
+     */
+    public function postDeleteAction($post_id) {
+        $em = $this->getDoctrine()->getManager();
+
+        $post = $em->getRepository('AppBundle:Post')
+            ->find($post_id);
+
+        if ($post == null)
+            return new JsonResponse(json_encode(array(
+                'deleted' => false
+            )));
+
+        $em->remove($post);
+        $em->flush();
+
+        return new JsonResponse(json_encode(array('deleted' => true)));
+    }
 }

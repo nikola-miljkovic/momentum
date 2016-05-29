@@ -79,9 +79,9 @@ class User implements UserInterface, \Serializable
         return $this->roles;
     }
 
-    public function addRole($role)
+    public function setRoles($roles)
     {
-        return $this->roles->add($role);
+        return $this->roles = $roles;
     }
 
     public function getId()

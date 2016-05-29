@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\DonePost;
 use AppBundle\Entity\InProgressPost;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -28,6 +29,27 @@ class GovernmentController extends Controller
         $inProgressPost->setComment("Test");
 
         $em->persist($inProgressPost);
+        $em->flush();
+
+        return $this->render('AppBundle:Admin:index.html.twig', array(
+            "message" => "done"
+        ));
+    }
+
+    /**
+     * @Route("/set_is_done/{post_id}")
+     * @Security("is_granted('ROLE_GOVERNMENT')")
+     */
+    public function setIsDoneAction($post_id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $donePost = new DonePost();
+
+        $donePost->setPost($em->getReference('AppBundle:Post', $post_id));
+        $donePost->setGovernment($this->getUser());
+
+        $em->persist($donePost);
         $em->flush();
 
         return $this->render('AppBundle:Admin:index.html.twig', array(
