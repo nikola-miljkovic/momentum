@@ -28,9 +28,13 @@ class InProgressPost
     /**
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="government_id", referencedColumnName="id")
-     * @ORM\Id()
      */
     private $government;
+
+    /**
+     * @ORM\Column(name="active", type="boolean", nullable=false)
+     */
+    private $active = true;
 
     /**
      * @ORM\Column(name="posted_at", type="datetime")
@@ -117,6 +121,16 @@ class InProgressPost
     public function getGovernment()
     {
         return $this->government;
+    }
+
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    public function setActive($active)
+    {
+        $this->active = $active;
     }
 
     function jsonSerialize()
