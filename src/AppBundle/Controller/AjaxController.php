@@ -2,8 +2,8 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Repository\Post;
-use AppBundle\Repository\Vote;
+use AppBundle\Entity\Post;
+use AppBundle\Entity\Vote;
 use Doctrine\ORM\Query\QueryException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
