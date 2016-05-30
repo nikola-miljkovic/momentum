@@ -57,7 +57,9 @@ class DefaultController extends Controller
      */
     public function doneAction(Request $request)
     {
-        return $this->render('index.html.twig');
+        return $this->render('index.html.twig', array(
+            'postSource' => 'post_list_done'
+        ));
     }
 
     /**

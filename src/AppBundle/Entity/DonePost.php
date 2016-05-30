@@ -28,13 +28,6 @@ class DonePost
     private $government;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     * @ORM\Id()
-     */
-    private $user;
-
-    /**
      * @ORM\Column(name="done_at", type="datetime")
      */
     private $doneAt;
@@ -85,28 +78,5 @@ class DonePost
     public function getGovernment()
     {
         return $this->government;
-    }
-
-    /**
-     * Set user
-     *
-     * @param integer $user
-     * @return InProgressPost
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return integer
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 }

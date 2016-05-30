@@ -1,139 +1,67 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Momentum{% endblock %}
-
+{% block title %}Momentum | Log In {% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/font-styles.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <style>
-        .document-body {
-            background-color: #173e43;
-            font-size: 16px;
-        }
-
-        .login-block {
-            border-radius: 3px;
-            background-color: #FFF;
-        }
-
-        .login-block {
-            padding: 0;
-            margin: 0.5em;
-        }
-
-        .login-block > div:first-child {
-            text-align: center;
-            padding: 1em;
-            font-weight: 700;
-            color: #3fb0ac;
-        }
-
-        .login-block > div {
-            box-sizing: border-box;
-            border-bottom: 1px solid #DDD;
-            width: 100%;
-        }
-
-        .login-block div:last-child {
-            border-bottom: 0 solid #DDD;
-        }
-
-        .login-block div input,
-        .login-block div div input
-        {
-            width: 100%;
-            padding: 1em;
-            margin: 0;
-            border: 0;
-            background: rgba(192, 192, 192, .2);
-        }
-
-        .login-block div input:focus {
-            background: rgba(192, 192, 192, .4);
-        }
-
-        .name-inline input {
-            width: 50% !important;
-        }
-
-        .name-inline input:last-child {
-            margin-left: -5px;
-        }
-
-        input[type="submit"],
-        button[type="submit"]{
-            border-radius: 3px;
-            border: 0;
-            width: 100%;
-            padding: 0.5em;
-            background: #3fb0ac;
-            color: #FFF;
-            font-size: 1.2em;
-        }
-
-        input[type="submit"]:hover,
-        button[type="submit"]:hover {
-            background-color: rgba(63, 176, 172, .4);
-        }
-
-        .forgot-something a {
-            color: #AAB8C2;
-        }
-
-        .forgot-something a:hover {
-            color: #AAB8C2;
-        }
-
-        .error-list {
-            padding: 1em;
-            color: #ff395e;
-        }
-    </style>
+    <link href="css/registerpage.css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
+    {% include 'navbar.html.twig' %}
+    
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center" style="color: #FFF; margin: 3em 0 2em 0;">
-                <svg style="width: 80px; height: 80px"></svg>
-                <span ><img src="../../../web/pictures/logo3.png"></span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-offset-4 col-lg-4">
-                {{ form_start(form) }}
-                <div class="login-block">
-                    <div>
-                        Registration
-                    </div>
-                    <div class="name-inline">
-                        {{ form_widget(form.firstName) }}
-                        {{ form_widget(form.lastName) }}
-                    </div>
-                    <div>
-                        {{ form_widget(form.username) }}
-                    </div>
-                    <div>
-                        {{ form_widget(form.email) }}
-                    </div>
-                    <div>
-                        {{ form_widget(form.password.first) }}
-                    </div>
-                    <div>
-                        {{ form_widget(form.password.second) }}
-                    </div>
-                    {% if form_errors is defined and form_errors|length > 0 %}
-                        <div class="error-list">
-                            <small>{{ form_errors }}</small>
+        <div class="row centered-form">
+        <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                        <h3 class="panel-title"><img src="images/logo/logo-green_blue2_nobg.png" alt="logo" id="logo"></h3>
                         </div>
-                    {% endif %}
+                        <div class="panel-body">
+                        {{ form_start(form) }}
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        {{ form_widget(form.firstName, {'attr': {'class': 'form-control input-sm'}}) }}
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        {{ form_widget(form.lastName, {'attr': {'class': 'form-control input-sm'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                {{ form_widget(form.username, {'attr': {'class': 'form-control input-sm'}}) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_widget(form.email, {'attr': {'class': 'form-control input-sm'}}) }}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        {{ form_widget(form.password.first, {'attr': {'class': 'form-control input-sm'}}) }}
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        {{ form_widget(form.password.second, {'attr': {'class': 'form-control input-sm'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {% if form_errors is defined and form_errors|length > 0 %}
+                                <div class="error-list">
+                                    <small>{{ form_errors }}</small>
+                                </div>
+                            {% endif %}
+                            
+                            {{ form_widget(form.submit, {'attr': {'class': 'btn btn-info btn-block'}}) }}
+                        
+                        {{ form_end(form) }}
+                    </div>
                 </div>
-                <div style="margin: 1em 0.5em">
-                    {{ form_widget(form.submit) }}
-                </div>
-                {{ form_end(form) }}
             </div>
         </div>
     </div>

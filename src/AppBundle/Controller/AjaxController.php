@@ -106,9 +106,23 @@ class AjaxController extends Controller
         $em = $this->getDoctrine()->getManager();
         $posts = $em
             ->getRepository('AppBundle:InProgressPost')
-            ->findInProgressPostsOrderByDate($offset);
+            ->findActiveInProgressPostsOrderByDate($offset);
         return new JsonResponse(json_encode($posts));
     }
+
+    /**
+     * @Route("/post_list_done/{offset}", defaults={"offset" = 0}, name="post_list_done")
+     * @Method({"GET"})
+     */
+    public function postListDoneAction(int $offset)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $posts = $em
+            ->getRepository('AppBundle:DonePost')
+            ->findDonePostsOrderByDate($offset);
+        return new JsonResponse(json_encode($posts));
+    }
+
     
     /**
      * @Route("/post_vote/{post_id}", name="post_vote", requirements={

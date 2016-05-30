@@ -12,4 +12,14 @@ use Doctrine\ORM\EntityRepository;
  */
 class DonePostRepository extends EntityRepository
 {
+    function findDonePostsOrderByDate($offset) {
+        return $this->createQueryBuilder('ip')
+            ->select(array('p.id', 'p.content', 'ip.doneAt as date', 'p.voteCount'))
+            ->leftJoin('ip.post', 'p')
+            ->orderBy('ip.doneAt', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getScalarResult();
+    }
 }

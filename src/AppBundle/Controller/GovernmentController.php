@@ -7,6 +7,7 @@ use AppBundle\Entity\InProgressPost;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class GovernmentController
@@ -31,9 +32,9 @@ class GovernmentController extends Controller
         $em->persist($inProgressPost);
         $em->flush();
 
-        return $this->render('AppBundle:Admin:index.html.twig', array(
-            "message" => "done"
-        ));
+        return new JsonResponse(json_encode(array(
+            'promoted' => true,
+        )));
     }
 
     /**
@@ -44,16 +45,28 @@ class GovernmentController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        $post = $em->getRepository('AppBundle:InProgressPost')
+            ->findOneBy(array('post' => $post_id));
+
+        if ($post == null) {
+            new JsonResponse(json_encode(array(
+                'promoted' => false,
+            )));
+        }
+
         $donePost = new DonePost();
+
+        $post->setActive(false);
 
         $donePost->setPost($em->getReference('AppBundle:Post', $post_id));
         $donePost->setGovernment($this->getUser());
 
+        $em->persist($post);
         $em->persist($donePost);
         $em->flush();
 
-        return $this->render('AppBundle:Admin:index.html.twig', array(
-            "message" => "done"
-        ));
+        return new JsonResponse(json_encode(array(
+            'promoted' => true,
+        )));
     }
 }
