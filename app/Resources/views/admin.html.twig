@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Momentum | Admin{% endblock %}
+
+{% block body %}
+    {% include 'navbar.html.twig' %}
+    
+    <div class="container">
+            <div class="row main-slider">
+                <div class="col-sm-6">
+                    {{ form_start(formPost) }}
+                        {{ form_widget(formPost.searchPost) }}
+                    {{ form_end(formPost) }}
+                 <hr> 
+                 <ul>
+                    {% for post in posts %}
+                    <li class="list-group-item">
+                        
+                        
+                        <div class="well-card">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <h4 id="#ID" class="logvia">#{{ post.id }}</h5>
+                                </div>
+
+                                <div class="col-sm-offset-9 col-sm-1">
+                                    <a href=""data-toggle="modal" data-target="#myModal">&times;</a>
+                                </div>
+                                <div class="modal fade" id="myModal" role="dialog">
+                                    <div class="modal-dialog">
+                                    
+                                      <!-- Modal content-->
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                          <h4 class="modal-title">Delete post</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                          By deleting post all votes will be lost. You sure want to delete your post?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
+                                          <button type="button" class="btn btn-default" data-dismiss="modal"><c class="logvia">Cancel</c></button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>    
+                                </div>
+                            </div> 
+
+                             <div class="row">
+                                <div class="main-post-text">
+                                    <p className="lead-text">
+                                        {{ post.content }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+
+                            </div>
+                        </li>  
+                        {% endfor %}
+                </ul>
+            
+            </div>
+            <div class="col-sm-6">
+                {{ form_start(formUser) }}
+                    {{ form_widget(formUser.searchUser) }}
+                {{ form_end(formUser) }}
+                <hr>
+                <ul>
+                    {% for user in users %}
+                        <li class="list-group-item">
+                            <div class="well-card">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        {{ user.username }}
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <a class="btn btn-success">Up Grade</a>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <a class="btn btn-warning">Downgrade</a>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <a class="btn btn-danger">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-sm-4">&nbsp</div>
+        </div>
+    </div>
+{% endblock %}
+

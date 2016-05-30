@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 /**
  * Class AdminController
  * @Route("/admin")
- * @Security("is_granted('ROLE_ADMIN')")
+ * @Security("has_role('ROLE_ADMIN')")
  */
 class AdminController extends Controller
 {
@@ -22,13 +22,16 @@ class AdminController extends Controller
      */
     public function indexAction()
     {
-        $formSearch = $this->createFormBuilder()
+        $formUser = $this->createFormBuilder()
             ->add('searchUser', TextType::class, array('attr' =>
                 array('placeholder' => 'Search users')))
+            ->getForm();
+
+        $formPost = $this->createFormBuilder()
             ->add('searchPost', TextType::class, array('attr' =>
                 array('placeholder' => 'Search posts')))
             ->getForm();
-
+            
         $em = $this->getDoctrine()->getManager();
 
         $posts = $em->getRepository('AppBundle:Post')
@@ -37,8 +40,9 @@ class AdminController extends Controller
         $users = $em->getRepository('AppBundle:User')
             ->findAll();
 
-        return $this->render('AppBundle:Admin:index.html.twig', array(
-            'form' => $formSearch->createView(),
+        return $this->render('admin.html.twig', array(
+            'formUser' => $formUser->createView(),
+            'formPost' => $formPost->createView(),
             'posts' => $posts,
             'users' => $users,
         ));
@@ -81,7 +85,7 @@ class AdminController extends Controller
             $user->setRoles(array('ROLE_GOVERNMENT'));
         }
 
-        $em->persist($user);
+        $em->merge($user);
         $em->flush();
 
         return new JsonResponse(json_encode(array('promoted' => true)));

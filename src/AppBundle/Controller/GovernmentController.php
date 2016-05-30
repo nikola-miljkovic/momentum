@@ -12,12 +12,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 /**
  * Class GovernmentController
  * @Route("/")
+ * @Security("has_role('ROLE_GOVERNMENT')")
  */
 class GovernmentController extends Controller
 {
     /**
      * @Route("/set_in_progress/{post_id}")
-     * @Security("is_granted('ROLE_GOVERNMENT')")
      */
     public function setInProgressAction($post_id)
     {
@@ -39,7 +39,6 @@ class GovernmentController extends Controller
 
     /**
      * @Route("/set_is_done/{post_id}")
-     * @Security("is_granted('ROLE_GOVERNMENT')")
      */
     public function setIsDoneAction($post_id)
     {
