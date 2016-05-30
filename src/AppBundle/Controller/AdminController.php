@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class AdminController extends Controller
 {
+    /*Home page for ADMIN*/
     /**
      * @Route("/")
      */

@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class AjaxController extends Controller
 {
+    /*Action on posting new post*/
     /**
     * @Route("/post", name="post")
     * @Method({"POST"})
@@ -56,6 +57,7 @@ class AjaxController extends Controller
         }
     }
 
+    /*Action on clicking Home, all posts sorted by date created on*/
     /**
      * @Route("/post_list_new/{offset}", defaults={"offset" = 0}, name="post_list_new")
      * @Method({"GET"})
@@ -76,7 +78,7 @@ class AjaxController extends Controller
 
         return new JsonResponse(json_encode($posts));
     }
-
+    /*Action performed on clicking Popular, all posts sorted by number of votes*/
     /**
      * @Route("/post_list_popular/{offset}", defaults={"offset" = 0}, name="post_list_popular")
      * @Method({"GET"})
@@ -96,7 +98,7 @@ class AjaxController extends Controller
 
         return new JsonResponse(json_encode($posts));
     }
-
+    /*Action performed on clicking In Progress, all posts selected as In Progress, sorted by date of put in progress*/
     /**
      * @Route("/post_list_active/{offset}", defaults={"offset" = 0}, name="post_list_active")
      * @Method({"GET"})
@@ -109,7 +111,7 @@ class AjaxController extends Controller
             ->findActiveInProgressPostsOrderByDate($offset);
         return new JsonResponse(json_encode($posts));
     }
-
+    /*Action on clicking Done, all posts selected as done, sorted by date of done*/
     /**
      * @Route("/post_list_done/{offset}", defaults={"offset" = 0}, name="post_list_done")
      * @Method({"GET"})
@@ -123,7 +125,7 @@ class AjaxController extends Controller
         return new JsonResponse(json_encode($posts));
     }
 
-    
+    /*Action on clicking vote up on post, if voted, down-vote */
     /**
      * @Route("/post_vote/{post_id}", name="post_vote", requirements={
      *         "post_id": "\d+"

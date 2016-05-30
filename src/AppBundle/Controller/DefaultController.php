@@ -22,6 +22,7 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class DefaultController extends Controller
 {
+    /*Routing to index page and putting all posts sorted by date*/
     /**
      * @Route("/", name="_index")
      */
@@ -32,6 +33,7 @@ class DefaultController extends Controller
         ));
     }
 
+    /*Clicking on popular and calling ajax controller */
     /**
      * @Route("/popular", name="_popular")
      */
@@ -42,6 +44,7 @@ class DefaultController extends Controller
         ));
     }
 
+    /*routing to Active == In Progress*/
     /**
      * @Route("/active", name="_active")
      */
@@ -51,7 +54,7 @@ class DefaultController extends Controller
             'postSource' => 'post_list_active'
         ));
     }
-
+    /*Routing to done posts and calling AjaxController to render Done posts*/
     /**
      * @Route("/done", name="_done")
      */
@@ -61,7 +64,7 @@ class DefaultController extends Controller
             'postSource' => 'post_list_done'
         ));
     }
-
+    /*On clicking Log in, rendering that page*/
     /**
      * @Route("/login", name="_login")
      */
@@ -85,7 +88,9 @@ class DefaultController extends Controller
         );
     }
 
-
+    /*On clicking Register, rendering that page, making form for registration,
+      If form filled correctly adding new user in database of users
+    */
     /**
      * @Route("/register", name="_register")
      * @Method({"POST", "GET"})
@@ -124,7 +129,7 @@ class DefaultController extends Controller
         }
 
         $form->handleRequest($request);
-
+    /*Handling with correctly filled form*/
         if ($form->isValid()) {
             try {
                 // encode password
