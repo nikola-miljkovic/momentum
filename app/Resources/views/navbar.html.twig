@@ -1,39 +1,59 @@
 {% block navbar %}
     {% macro section(text, path, route) %}
-        <li class="{{ app.request.attributes.get('_route') == path ? 'active'}} section"><a href="{{path(path)}}">{{text}}</a></li>
+        <li class="{{ app.request.attributes.get('_route') == path ? 'active'}} nav-font"><a href="{{path(path)}}">{{text}}</a></li>
     {% endmacro %}
     {% import _self as navigation %}
-
-    <div class="navbar navbar-inverse navbar-static-top" id = "navigationBar">
+    
+    <header id="header" >      
         <div class="container">
             <div class="row">
-                <div class="col-sm-offset-1 col-sm-10">
-                    <a href="#" class= "navbar-brand"><b style="font-family:verdana" style="font-size:10px">MOMENTUM</b></a>
-                    <button class= "navbar-toggle" data-toggle = "collapse" data-target = ".navbarHeaderCollapse"></button>
-                    <div class ="collapse navbar-collapse navHeaderCollapse">
-                        <ul class = "nav navbar-nav navbar-right">
+                <div class="col-sm-12 overflow">
+                   <div class="social-icons pull-right">
+                        <ul class="nav nav-pills">
+                            <li id ="logvia">Follow us:</li>
+                            <li><a href="http://www.facebook.com/momentumwebapp"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href=""><i class="fa fa-twitter"></i></a></li>
+                            <li><a href=""><i class="fa fa-google-plus"></i></a></li>
+                            <li><a href=""><i class="fa fa-dribbble"></i></a></li>
+                            <li>&nbsp</li>
                             {% if app.user %}
-                            <li>    Logged in as {{ app.user.username }}</li>
-                            <li><a href="{{path('logout')}}">Logout</a></li>
+                                <li>Logged in as {{ app.user.username }}</li>
+                                <li><a href="{{path('logout')}}">Logout</a></li>
                             {% else %}
-                            <li><a href="{{path('_login')}}">Log In</a></li>
-                            <li><a href="{{path('_register')}}">Register</a></li>
+                                <li><a href="{{path('_login')}}"><i class="fa"><img src="images/logo/logo-green_blue2_1_nobg.png" id="logpic"> Log in</i></a></li>
+                                <li><a href="{{path('_register')}}">Register</a></li>
                             {% endif %}
+                        </ul>
+                    </div> 
+                </div>
+             </div>
+        </div>
+        <div class="navbar navbar-inverse" role="banner">
+            <div class="container">
+                <div class="row">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <div>
+                        <a class="navbar-brand col-xs-2" href="{{path('_index')}}">
+                            <h1><img src="images/logo/logo-green_blue2_nobg.png" alt="logo" id="logo"></h1>
+                        </a>
+                    </div>
+                    <div class="collapse navbar-collapse col-xs-offset-1 col-xs-9">
+                        <ul class="nav navbar-nav navbar">  
+                            {{ navigation.section('New', '_index') }}
+                            {{ navigation.section('Popular', '_popular') }}
+                            {{ navigation.section('In Progress', '_active') }}
+                            {{ navigation.section('Done', '_done') }}               
                         </ul>
                     </div>
                 </div>
             </div>
-            <div class="row section-nav">
-                <div class="col-md-offset-1 col-md-10">
-                    <ul class="list-inline section-list">
-                        {{ navigation.section('New', '_index') }}
-                        {{ navigation.section('Popular', '_popular') }}
-                        {{ navigation.section('In Progress', '_active') }}
-                        {{ navigation.section('Done', '_done') }}
-                    </ul>
-                </div>
-            </div>
         </div>
-        </div>
-    </div>
+    </header>
 {% endblock %}
