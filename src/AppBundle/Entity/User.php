@@ -84,6 +84,14 @@ class User implements UserInterface, \Serializable
         return $this->roles = $roles;
     }
 
+    public function hasRole($role)
+    {
+        if (in_array($role, $this->getRoles())) {
+            return true;
+        }
+        return false;
+    }
+
     public function getId()
     {
         return $this->id;

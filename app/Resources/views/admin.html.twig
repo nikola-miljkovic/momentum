@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Momentum | Admin{% endblock %}
+
+{% block body %}
+    {% include 'navbar.html.twig' %}
+    
+    <div class="container">
+            <div class="row main-slider">
+                <div class="col-sm-6">
+                    {{ form_start(formPost) }}
+                        {{ form_widget(formPost.searchPost) }}
+                    {{ form_end(formPost) }}
+                 <hr> 
+                 <ul>
+                    {% for post in posts %}
+                    <li class="list-group-item">
+                        <div class="well-card">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <h4 id="#ID" class="logvia">#{{ post.id }}</h5>
+                                </div>
+
+                                <div class="col-sm-offset-9 col-sm-1">
+                                    <a href="/admin/post_delete/{{ post.id }}">&times;</a>
+                                </div>
+                            </div> 
+
+                             <div class="row">
+                                <div class="main-post-text">
+                                    <p className="lead-text">
+                                        {{ post.content }}
+                                    </p>
+                                </div>
+                            </div>
+                        </li>  
+                        {% endfor %}
+                </ul>
+            
+            </div>
+            <div class="col-sm-6">
+                {{ form_start(formUser) }}
+                    {{ form_widget(formUser.searchUser) }}
+                {{ form_end(formUser) }}
+                <hr>
+                <ul>
+                    {% for user in users %}
+                        <li class="list-group-item">
+                            <div class="well-card">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        {{ user.username }}
+                                        {{ user.roles| join(',') }}
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <a href="/admin/promote/{{ user.username }}" class="btn btn-success">Promote</a>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <a href="/admin/demote/{{ user.username }}" class="btn btn-warning">Demote</a>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <a href="/admin/delete/{{ user.username }}" class="btn btn-danger">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-sm-4">&nbsp</div>
+        </div>
+    </div>
+{% endblock %}
+
