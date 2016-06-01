@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class AdminController extends Controller
 {
     /**
-     * @Route("/")
+     * @Route("/", name="_admin")
      */
     public function indexAction()
     {
@@ -88,7 +88,7 @@ class AdminController extends Controller
         $em->merge($user);
         $em->flush();
 
-        return new JsonResponse(json_encode(array('promoted' => true)));
+        return $this->redirectToRoute('_admin');
     }
 
     /**
@@ -115,10 +115,10 @@ class AdminController extends Controller
             $user->setRoles(array('ROLE_USER'));
         }
 
-        $em->persist($user);
+        $em->merge($user);
         $em->flush();
 
-        return new JsonResponse(json_encode(array('promoted' => true)));
+        return $this->redirectToRoute('_admin');
     }
 
     /**
@@ -139,8 +139,8 @@ class AdminController extends Controller
 
         $em->remove($user);
         $em->flush();
-
-        return new JsonResponse(json_encode(array('deleted' => true)));
+        
+        return $this->redirectToRoute('_admin');
     }
 
     /**
@@ -160,6 +160,6 @@ class AdminController extends Controller
         $em->remove($post);
         $em->flush();
 
-        return new JsonResponse(json_encode(array('deleted' => true)));
+        return $this->redirectToRoute('_admin');
     }
 }

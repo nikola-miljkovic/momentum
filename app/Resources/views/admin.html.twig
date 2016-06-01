@@ -15,8 +15,6 @@
                  <ul>
                     {% for post in posts %}
                     <li class="list-group-item">
-                        
-                        
                         <div class="well-card">
                             <div class="row">
                                 <div class="col-sm-2">
@@ -24,27 +22,7 @@
                                 </div>
 
                                 <div class="col-sm-offset-9 col-sm-1">
-                                    <a href=""data-toggle="modal" data-target="#myModal">&times;</a>
-                                </div>
-                                <div class="modal fade" id="myModal" role="dialog">
-                                    <div class="modal-dialog">
-                                    
-                                      <!-- Modal content-->
-                                      <div class="modal-content">
-                                        <div class="modal-header">
-                                          <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                          <h4 class="modal-title">Delete post</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                          By deleting post all votes will be lost. You sure want to delete your post?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
-                                          <button type="button" class="btn btn-default" data-dismiss="modal"><c class="logvia">Cancel</c></button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>    
+                                    <a href="/admin/post_delete/{{ post.id }}">&times;</a>
                                 </div>
                             </div> 
 
@@ -54,9 +32,6 @@
                                         {{ post.content }}
                                     </p>
                                 </div>
-                            </div>
-                            <div>
-
                             </div>
                         </li>  
                         {% endfor %}
@@ -75,17 +50,18 @@
                                 <div class="row">
                                     <div class="col-sm-4">
                                         {{ user.username }}
+                                        {{ user.roles| join(',') }}
                                     </div>
                                     <div class="col-sm-8">
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                <a class="btn btn-success">Up Grade</a>
+                                                <a href="/admin/promote/{{ user.username }}" class="btn btn-success">Promote</a>
                                             </div>
                                             <div class="col-sm-4">
-                                                <a class="btn btn-warning">Downgrade</a>
+                                                <a href="/admin/demote/{{ user.username }}" class="btn btn-warning">Demote</a>
                                             </div>
                                             <div class="col-sm-4">
-                                                <a class="btn btn-danger">Delete</a>
+                                                <a href="/admin/delete/{{ user.username }}" class="btn btn-danger">Delete</a>
                                             </div>
                                         </div>
                                     </div>

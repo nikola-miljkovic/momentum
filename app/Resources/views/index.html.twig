@@ -1,12 +1,6 @@
 {% extends 'base.html.twig' %}
 
-
 {% block title %}Momentum{% endblock %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-{% endblock %}
 
 {% block body %}
     {% include 'navbar.html.twig' %}
@@ -91,7 +85,7 @@
     <script type="application/javascript">
         window.postSource = '{{ path(postSource) }}'
     </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="/js/bootstrap.js"></script>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
     <script src="/dist/bundle.js"></script>
 {% endblock %}
