@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class GovernmentController extends Controller
 {
+    /*Promoting post to In Progress category  */
     /**
      * @Route("/set_in_progress/{post_id}")
      */
@@ -36,7 +37,7 @@ class GovernmentController extends Controller
             'promoted' => true,
         )));
     }
-
+    /*Promoting post to Done category*/
     /**
      * @Route("/set_is_done/{post_id}")
      */
