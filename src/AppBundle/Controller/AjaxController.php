@@ -174,4 +174,30 @@ class AjaxController extends Controller
 
         return new JsonResponse(json_encode($post));
     }
+
+    /**
+     * @Route("/post_delete/{post_id}", name="post_delete", requirements={
+     *         "post_id": "\d+"
+     *     }
+     *  )
+     * @Method({"POST"})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
+     */
+    public function postDeleteAction($post_id) {
+        $em = $this->getDoctrine()->getManager();
+        $post = $em->getRepository("AppBundle:Post")->find($post_id);
+
+        if ($post->getUser()->getId() == $this->getUser()->getId()) {
+            // can delete
+            $em->remove($post);
+            $em->flush();
+            return new JsonResponse(json_encode(array(
+                "deleted" => true
+            )));
+        }
+
+        return new JsonResponse(json_encode(array(
+            "deleted" => false
+        )));
+    }
 }

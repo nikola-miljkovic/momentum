@@ -14,6 +14,7 @@ var PostList = React.createClass({
     getInitialState: function() {
         return {
             loaded: false,
+            loggedIn: this.props.user >= 0,
             posts: []
         };
     },
@@ -28,17 +29,38 @@ var PostList = React.createClass({
     componentWillUnmount: function() {
         this.serverRequest.abort();
     },
+    onDeletePost: function(id, e) {
+      e.preventDefault();
+      $.post('/ajax/post_delete/' + id, function(data) {
+          var deleted = JSON.parse(data);
+          if (deleted.deleted === true) {
+              this.setState({
+                  posts: this.state.posts.filter(function(post) {
+                    return post.id !== id;
+                  })
+              });
+          }
+        }.bind(this)
+      );
+    },
     render: function() {
-        var list = this.state.loaded === true ?
-            this.state.posts.map(function(post) {
-                return <PostListItem key={post.id} {...post} />
-            }) : loader;
-        
+        var input = null;
+        if (this.state.loggedIn === true) {
+          input = <li className="list-group-item">
+            <PostInput></PostInput>
+          </li>;
+        }
+
+        var list = loader;
+        if (this.state.loaded === true) {
+          list = this.state.posts.map(function(post) {
+            return <PostListItem key={post.id} onDelete={this.onDeletePost.bind(this, post.id)} {...post} />
+          }.bind(this));
+        }
+
         return (
             <ul className="list-group">
-                <li className="list-group-item">
-                    <PostInput></PostInput>
-                </li>
+                {input}
                 {list}
             </ul>
         );

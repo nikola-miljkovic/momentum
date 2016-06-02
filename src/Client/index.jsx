@@ -4,8 +4,9 @@ var PostList = require('./components/post-list.jsx');
 
 // load server rendered javascript
 var postSource = window.postSource;
+var loginUser = window.loginUser;
 
 ReactDOM.render(
-    <PostList source={postSource} />,
+    <PostList source={postSource} user={loginUser}/>,
     document.getElementById('post-list')
 );

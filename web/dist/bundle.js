@@ -50,8 +50,9 @@
 
 	// load server rendered javascript
 	var postSource = window.postSource;
+	var loginUser = window.loginUser;
 
-	ReactDOM.render(React.createElement(PostList, { source: postSource }), document.getElementById('post-list'));
+	ReactDOM.render(React.createElement(PostList, { source: postSource, user: loginUser }), document.getElementById('post-list'));
 
 /***/ },
 /* 1 */
@@ -20035,6 +20036,7 @@
 	    getInitialState: function () {
 	        return {
 	            loaded: false,
+	            loggedIn: this.props.user >= 0,
 	            posts: []
 	        };
 	    },
@@ -20049,19 +20051,40 @@
 	    componentWillUnmount: function () {
 	        this.serverRequest.abort();
 	    },
+	    onDeletePost: function (id, e) {
+	        e.preventDefault();
+	        $.post('/ajax/post_delete/' + id, function (data) {
+	            var deleted = JSON.parse(data);
+	            if (deleted.deleted === true) {
+	                this.setState({
+	                    posts: this.state.posts.filter(function (post) {
+	                        return post.id !== id;
+	                    })
+	                });
+	            }
+	        }.bind(this));
+	    },
 	    render: function () {
-	        var list = this.state.loaded === true ? this.state.posts.map(function (post) {
-	            return React.createElement(PostListItem, _extends({ key: post.id }, post));
-	        }) : loader;
+	        var input = null;
+	        if (this.state.loggedIn === true) {
+	            input = React.createElement(
+	                'li',
+	                { className: 'list-group-item' },
+	                React.createElement(PostInput, null)
+	            );
+	        }
+
+	        var list = loader;
+	        if (this.state.loaded === true) {
+	            list = this.state.posts.map(function (post) {
+	                return React.createElement(PostListItem, _extends({ key: post.id, onDelete: this.onDeletePost.bind(this, post.id) }, post));
+	            }.bind(this));
+	        }
 
 	        return React.createElement(
 	            'ul',
 	            { className: 'list-group' },
-	            React.createElement(
-	                'li',
-	                { className: 'list-group-item' },
-	                React.createElement(PostInput, null)
-	            ),
+	            input,
 	            list
 	        );
 	    }
@@ -20253,6 +20276,15 @@
 	        }.bind(this));
 	    },
 	    render: function () {
+	        var button = null;
+	        if (this.props.posted === '1') {
+	            button = React.createElement(
+	                'a',
+	                { href: '#', onClick: this.props.onDelete },
+	                'DELETE'
+	            );
+	        }
+
 	        return React.createElement(
 	            'li',
 	            { className: 'list-group-item' },
@@ -20266,7 +20298,8 @@
 	                        'div',
 	                        null,
 	                        React.createElement(PostLink, { id: this.props.id })
-	                    )
+	                    ),
+	                    button
 	                ),
 	                React.createElement(
 	                    'div',

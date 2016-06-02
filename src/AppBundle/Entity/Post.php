@@ -103,6 +103,7 @@ class Post implements \JsonSerializable
     {
         return array(
             'id' => $this->id,
+            'userId' => $this->user->getId(),
             'content' => $this->content,
             'date' => date_format($this->postedAt, 'g:ia l jS F Y'),
             'voteCount' => $this->voteCount,

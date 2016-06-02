@@ -20,6 +20,11 @@ var PostListItem = React.createClass({
         );
     },
     render: function() {
+        var button = null;
+        if (this.props.posted === '1') {
+            button = <a href='#' onClick={this.props.onDelete}>DELETE</a>;
+        }
+
         return (
             <li className="list-group-item">
                 <div className="well-card">
@@ -27,7 +32,8 @@ var PostListItem = React.createClass({
                         <div>
                             <PostLink id={this.props.id}></PostLink>
                         </div>
-                    </div> 
+                        {button}
+                    </div>
                     <div className="row">
                         <div>
                             <p className="lead-text">
