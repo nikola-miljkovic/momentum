@@ -21,6 +21,7 @@ class PostRepository extends EntityRepository
                            AND v.user = :user_id)
                            as voted')
             ->where('p.id = :post_id')
+            ->andWhere('p.active = true')
             ->setParameter('post_id', $id)
             ->setParameter('user_id', $user->getId())
             ->setMaxResults(1)
@@ -31,7 +32,7 @@ class PostRepository extends EntityRepository
     public function findAllOrderById(int $offset = 0)
     {
         return $this->findBy(
-            array(),
+            array('active' => true),
             array('id' => 'DESC'),
             10,
             $offset
@@ -50,6 +51,7 @@ class PostRepository extends EntityRepository
                            WHERE v.post = p.id 
                            AND v.user = :user_id)
                            as voted')
+                ->where('p.active = true')
                 ->orderBy('p.id', 'DESC')
                 ->setParameter('user_id', $user->getId())
                 ->setFirstResult($offset)
@@ -64,7 +66,7 @@ class PostRepository extends EntityRepository
     public function findAllOrderByVoteCount(int $offset = 0)
     {
         return $this->findBy(
-            array(),
+            array('active' => true),
             array('voteCount' => 'DESC'),
             10,
             $offset
@@ -82,6 +84,7 @@ class PostRepository extends EntityRepository
                            WHERE v.post = p.id 
                            AND v.user = :user_id)
                            as voted')
+            ->where('p.active = true')
             ->orderBy('p.voteCount', 'DESC')
             ->setParameter('user_id', $user->getId())
             ->setFirstResult($offset)

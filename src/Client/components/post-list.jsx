@@ -43,6 +43,34 @@ var PostList = React.createClass({
         }.bind(this)
       );
     },
+    onClickDone: function(id, e) {
+      e.preventDefault();
+      $.post('/government/set_is_done/' + id, function(data) {
+        var promoted = JSON.parse(data);
+        if (promoted.promoted === true) {
+          this.setState({
+            posts: this.state.posts.filter(function(post) {
+              return post.id !== id;
+            })
+          });
+        }
+        }.bind(this)
+      );
+    },
+    onClickInProgress: function(id, e) {
+      e.preventDefault();
+      $.post('/government/set_in_progress/' + id, function(data) {
+        var promoted = JSON.parse(data);
+        if (promoted.promoted === true) {
+          this.setState({
+            posts: this.state.posts.filter(function(post) {
+              return post.id !== id;
+            })
+          });
+        }
+        }.bind(this)
+      );
+    },
     render: function() {
         var input = null;
         if (this.state.loggedIn === true) {
@@ -54,7 +82,13 @@ var PostList = React.createClass({
         var list = loader;
         if (this.state.loaded === true) {
           list = this.state.posts.map(function(post) {
-            return <PostListItem key={post.id} onDelete={this.onDeletePost.bind(this, post.id)} {...post} />
+            return <PostListItem
+              key={post.id}
+              onDelete={this.onDeletePost.bind(this, post.id)}
+              onClickDone={this.onClickDone.bind(this, post.id)}
+              onClickInProgress={this.onClickInProgress.bind(this, post.id)}
+              {...post}
+            />;
           }.bind(this));
         }
 

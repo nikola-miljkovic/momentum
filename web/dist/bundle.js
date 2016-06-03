@@ -50,6 +50,7 @@
 
 	// load server rendered javascript
 	var postSource = window.postSource;
+	var isGovernment = window.isGovernment;
 	var loginUser = window.loginUser;
 
 	ReactDOM.render(React.createElement(PostList, { source: postSource, user: loginUser }), document.getElementById('post-list'));
@@ -20021,73 +20022,104 @@
 	var Spinner = __webpack_require__(172);
 
 	var loader = React.createElement(
-	    'li',
-	    { className: 'list-group-item' },
-	    React.createElement(
-	        'div',
-	        { className: 'text-center', style: { marginTop: '1.5em', marginBottom: '1.5em' } },
-	        React.createElement(Spinner, { spinnerName: 'wordpress', noFadeIn: true })
-	    )
+	  'li',
+	  { className: 'list-group-item' },
+	  React.createElement(
+	    'div',
+	    { className: 'text-center', style: { marginTop: '1.5em', marginBottom: '1.5em' } },
+	    React.createElement(Spinner, { spinnerName: 'wordpress', noFadeIn: true })
+	  )
 	);
 
 	var PostList = React.createClass({
-	    displayName: 'PostList',
+	  displayName: 'PostList',
 
-	    getInitialState: function () {
-	        return {
-	            loaded: false,
-	            loggedIn: this.props.user >= 0,
-	            posts: []
-	        };
-	    },
-	    componentDidMount: function () {
-	        this.serverRequest = $.get(this.props.source, function (result) {
-	            this.setState({
-	                loaded: true,
-	                posts: JSON.parse(result)
-	            });
-	        }.bind(this));
-	    },
-	    componentWillUnmount: function () {
-	        this.serverRequest.abort();
-	    },
-	    onDeletePost: function (id, e) {
-	        e.preventDefault();
-	        $.post('/ajax/post_delete/' + id, function (data) {
-	            var deleted = JSON.parse(data);
-	            if (deleted.deleted === true) {
-	                this.setState({
-	                    posts: this.state.posts.filter(function (post) {
-	                        return post.id !== id;
-	                    })
-	                });
-	            }
-	        }.bind(this));
-	    },
-	    render: function () {
-	        var input = null;
-	        if (this.state.loggedIn === true) {
-	            input = React.createElement(
-	                'li',
-	                { className: 'list-group-item' },
-	                React.createElement(PostInput, null)
-	            );
-	        }
-
-	        var list = loader;
-	        if (this.state.loaded === true) {
-	            list = this.state.posts.map(function (post) {
-	                return React.createElement(PostListItem, _extends({ key: post.id, onDelete: this.onDeletePost.bind(this, post.id) }, post));
-	            }.bind(this));
-	        }
-
-	        return React.createElement(
-	            'ul',
-	            { className: 'list-group' },
-	            input,
-	            list
-	        );
+	  getInitialState: function () {
+	    return {
+	      loaded: false,
+	      loggedIn: this.props.user >= 0,
+	      posts: []
+	    };
+	  },
+	  componentDidMount: function () {
+	    this.serverRequest = $.get(this.props.source, function (result) {
+	      this.setState({
+	        loaded: true,
+	        posts: JSON.parse(result)
+	      });
+	    }.bind(this));
+	  },
+	  componentWillUnmount: function () {
+	    this.serverRequest.abort();
+	  },
+	  onDeletePost: function (id, e) {
+	    e.preventDefault();
+	    $.post('/ajax/post_delete/' + id, function (data) {
+	      var deleted = JSON.parse(data);
+	      if (deleted.deleted === true) {
+	        this.setState({
+	          posts: this.state.posts.filter(function (post) {
+	            return post.id !== id;
+	          })
+	        });
+	      }
+	    }.bind(this));
+	  },
+	  onClickDone: function (id, e) {
+	    e.preventDefault();
+	    $.post('/government/set_is_done/' + id, function (data) {
+	      var promoted = JSON.parse(data);
+	      if (promoted.promoted === true) {
+	        this.setState({
+	          posts: this.state.posts.filter(function (post) {
+	            return post.id !== id;
+	          })
+	        });
+	      }
+	    }.bind(this));
+	  },
+	  onClickInProgress: function (id, e) {
+	    e.preventDefault();
+	    $.post('/government/set_in_progress/' + id, function (data) {
+	      var promoted = JSON.parse(data);
+	      if (promoted.promoted === true) {
+	        this.setState({
+	          posts: this.state.posts.filter(function (post) {
+	            return post.id !== id;
+	          })
+	        });
+	      }
+	    }.bind(this));
+	  },
+	  render: function () {
+	    var input = null;
+	    if (this.state.loggedIn === true) {
+	      input = React.createElement(
+	        'li',
+	        { className: 'list-group-item' },
+	        React.createElement(PostInput, null)
+	      );
 	    }
+
+	    var list = loader;
+	    if (this.state.loaded === true) {
+	      list = this.state.posts.map(function (post) {
+	        return React.createElement(PostListItem, _extends({
+	          key: post.id,
+	          onDelete: this.onDeletePost.bind(this, post.id),
+	          onClickDone: this.onClickDone.bind(this, post.id),
+	          onClickInProgress: this.onClickInProgress.bind(this, post.id)
+	        }, post));
+	      }.bind(this));
+	    }
+
+	    return React.createElement(
+	      'ul',
+	      { className: 'list-group' },
+	      input,
+	      list
+	    );
+	  }
 	});
 
 	module.exports = PostList;
@@ -20277,7 +20309,21 @@
 	    },
 	    render: function () {
 	        var button = null;
-	        if (this.props.posted === '1') {
+	        if (window.isGovernment === true) {
+	            if (window.currentRoute === '_active') {
+	                button = React.createElement(
+	                    'a',
+	                    { href: '#', onClick: this.props.onClickDone },
+	                    'Set Done'
+	                );
+	            } else if (window.currentRoute === '_index' || window.currentRoute === '_popular') {
+	                button = React.createElement(
+	                    'a',
+	                    { href: '#', onClick: this.props.onClickInProgress },
+	                    'In progress'
+	                );
+	            }
+	        }if (this.props.posted === '1') {
 	            button = React.createElement(
 	                'a',
 	                { href: '#', onClick: this.props.onDelete },

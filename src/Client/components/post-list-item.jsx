@@ -21,7 +21,13 @@ var PostListItem = React.createClass({
     },
     render: function() {
         var button = null;
-        if (this.props.posted === '1') {
+        if (window.isGovernment === true) {
+            if (window.currentRoute === '_active') {
+                button = <a href='#' onClick={this.props.onClickDone}>Set Done</a>;
+            } else if (window.currentRoute === '_index' || window.currentRoute === '_popular') {
+                button = <a href='#' onClick={this.props.onClickInProgress}>In progress</a>;
+            }
+        } if (this.props.posted === '1') {
             button = <a href='#' onClick={this.props.onDelete}>DELETE</a>;
         }
 

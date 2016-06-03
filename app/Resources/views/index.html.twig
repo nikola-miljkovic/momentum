@@ -84,11 +84,16 @@
 
 {% block javascripts %}
     <script type="application/javascript">
-        window.postSource = '{{ path(postSource) }}'
-        {% if app.user %}
-        window.loginUser = {{ app.user.id }};
-        {% else %}
+        window.currentRoute = '{{ app.request.attributes.get('_route') }}';
+        window.postSource = '{{ path(postSource) }}';
+        window.isGovernment = false;
         window.loginUser = -1;
+        {% if app.user %}
+            {% if 'ROLE_GOVERNMENT' in app.user.roles %}
+        window.isGovernment = true;
+            {% else %}
+        window.loginUser = {{ app.user.id }};
+            {% endif %}
         {% endif %}
     </script>
     <script src="/js/jquery.js"></script>

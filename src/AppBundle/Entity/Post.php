@@ -60,7 +60,12 @@ class Post implements \JsonSerializable
      * @ORM\Column(name="vote_count", type="integer")
      */
     private $voteCount = 0;
-    
+
+    /**
+     * @ORM\Column(name="active", type="boolean", nullable=false)
+     */
+    private $active = true;
+
     /**
     * @ORM\PrePersist
     */
@@ -99,6 +104,16 @@ class Post implements \JsonSerializable
         $this->content = $content;
     }
 
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    public function setActive($active)
+    {
+        $this->active = $active;
+    }
+    
     function jsonSerialize()
     {
         return array(
