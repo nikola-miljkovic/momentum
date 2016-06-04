@@ -15,6 +15,7 @@ var PostList = React.createClass({
         return {
             loaded: false,
             loggedIn: this.props.user >= 0,
+            maxLoad: false,
             posts: []
         };
     },
@@ -85,6 +86,16 @@ var PostList = React.createClass({
         });
       }
     },
+    loadMore: function() {
+      this.serverRequest = $.get(this.props.source + "/" + this.state.posts.length, function(result) {
+        var newPosts = JSON.parse(result);
+        this.setState({
+          loaded: true,
+          posts: this.state.posts.concat(newPosts),
+          maxLoad: newPosts.length % 10 !== 0 || newPosts.length == 0
+        })
+      }.bind(this));
+    },
     render: function() {
         var input = null;
         if (this.state.loggedIn === true) {
@@ -101,15 +112,25 @@ var PostList = React.createClass({
               onDelete={this.onDeletePost.bind(this, post.id)}
               onClickDone={this.onClickDone.bind(this, post.id)}
               onClickInProgress={this.onClickInProgress.bind(this, post.id)}
+              loggedIn={this.state.loggedIn}
               {...post}
             />;
           }.bind(this));
         }
 
+      var loadMoreButton = null;
+      if (this.state.loaded === true && !this.state.maxLoad) {
+        loadMoreButton = (
+            <li className="list-group-item">
+              <button onClick={this.loadMore}>See more</button>
+            </li>
+          );
+      }
         return (
             <ul className="list-group">
                 {input}
                 {list}
+                {loadMoreButton}
             </ul>
         );
     }

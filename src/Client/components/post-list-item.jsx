@@ -31,6 +31,19 @@ var PostListItem = React.createClass({
             button = <a href='#' onClick={this.props.onDelete}>DELETE</a>;
         }
 
+        var voteButton = null;
+        if (this.props.loggedIn) {
+            voteButton = (
+              <span>
+                <PostVoteButton voted={this.state.voted} onClick={this.onVote.bind(this, this.props.id)}></PostVoteButton>
+                <span className="vote-count">
+                    <small>•</small>
+                    <span style={{padding: '0em 0.4em'}}>{this.state.voteCount}</span>
+                </span>
+              </span>
+            );
+        }
+
         return (
             <li className="list-group-item">
                 <div className="well-card">
@@ -49,11 +62,7 @@ var PostListItem = React.createClass({
                     </div>
                     <div className="row">
                         <div>							
-                            <PostVoteButton voted={this.state.voted} onClick={this.onVote.bind(this, this.props.id)}></PostVoteButton>
-                            <span className="vote-count">
-                                <small>•</small>
-                                <span style={{padding: '0em 0.4em'}}>{this.state.voteCount}</span>
-                            </span>
+                            {voteButton}
                             <span className="pull-right date">{this.props.date}</span>
                         </div>
                     </div>

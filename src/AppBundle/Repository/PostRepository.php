@@ -14,7 +14,7 @@ class PostRepository extends EntityRepository
         return $this
             ->createQueryBuilder('p')
             ->select(array('p.id', 'p.content', 'p.postedAt as date', 'p.voteCount'))
-            ->addSelect('(CASE WHEN (p.user = :user_id) THEN 1 ELSE 0`END) as posted')
+            ->addSelect('(CASE WHEN (p.user = :user_id) THEN 1 ELSE 0 END) as posted')
             ->addSelect('(SELECT v.active
                            FROM AppBundle:Vote v
                            WHERE v.post = p.id 
