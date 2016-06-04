@@ -51,9 +51,11 @@ class AjaxController extends Controller
             $em->persist($post);
             $em->flush();
 
-            return new JsonResponse(array('message' => 'SUCCESS!'));
+            return new JsonResponse(json_encode($post));
         } else {
-            return new JsonResponse(array('message' => $form->getErrors(true)), 200);
+            return new JsonResponse(json_encode(array(
+                'message' => "Post requires minimum of 40 and maximum of 400 characters."))
+                , 200);
         }
     }
 

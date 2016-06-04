@@ -33,9 +33,8 @@ var PostField = React.createClass({
         };
 
         jQuery.post('/ajax/post', form, function(data, status) {
-            console.log(status);
-            console.log(data);
-        }, 'json');
+            this.props.onSubmitPost(data);
+        }.bind(this), 'json');
     },
     onClickPlaceholder: function() {
         this.refs['content'].focus();

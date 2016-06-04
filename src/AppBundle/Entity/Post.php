@@ -43,10 +43,10 @@ class Post implements \JsonSerializable
      *
      * @Assert\NotBlank()
      * @Assert\Length(
-     *     min = 40,
-     *     max = 400,
-     *     minMessage = "Post must be at least {{ limit }} characters long",
-     *     maxMessage = "Post cannot be longer than {{ limit }} characters"
+     *     min=40,
+     *     max=400,
+     *     minMessage="Post must be at least {{ limit }} characters long",
+     *     maxMessage="Post cannot be longer than {{ limit }} characters"
      * )
      */
     private $content;
@@ -118,7 +118,6 @@ class Post implements \JsonSerializable
     {
         return array(
             'id' => $this->id,
-            'userId' => $this->user->getId(),
             'content' => $this->content,
             'date' => date_format($this->postedAt, 'g:ia l jS F Y'),
             'voteCount' => $this->voteCount,

@@ -71,11 +71,25 @@ var PostList = React.createClass({
         }.bind(this)
       );
     },
+    onSubmitPost: function(data) {
+      var newPost = JSON.parse(data);
+      if (newPost.message !== undefined) {
+        // TODO: process error message
+      } else {
+        console.log(newPost);
+        newPost.posted = '1';
+
+        this.state.posts.unshift(newPost);
+        this.setState({
+          posts: this.state.posts
+        });
+      }
+    },
     render: function() {
         var input = null;
         if (this.state.loggedIn === true) {
           input = <li className="list-group-item">
-            <PostInput></PostInput>
+            <PostInput onSubmitPost={this.onSubmitPost}></PostInput>
           </li>;
         }
 

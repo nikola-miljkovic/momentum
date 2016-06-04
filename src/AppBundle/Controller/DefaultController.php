@@ -129,7 +129,8 @@ class DefaultController extends Controller
         }
 
         $form->handleRequest($request);
-    /*Handling with correctly filled form*/
+
+        /*Handling with correctly filled form*/
         if ($form->isValid()) {
             try {
                 // encode password

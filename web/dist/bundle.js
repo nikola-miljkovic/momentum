@@ -20091,13 +20091,24 @@
 	      }
 	    }.bind(this));
 	  },
+	  onSubmitPost: function (data) {
+	    console.log(data);
+	    var newPost = JSON.parse(data);
+	    console.log(newPost);
+	    newPost.posted = '1';
+	    this.state.posts.unshift(newPost);
+
+	    this.setState({
+	      posts: this.state.posts
+	    });
+	  },
 	  render: function () {
 	    var input = null;
 	    if (this.state.loggedIn === true) {
 	      input = React.createElement(
 	        'li',
 	        { className: 'list-group-item' },
-	        React.createElement(PostInput, null)
+	        React.createElement(PostInput, { onSubmitPost: this.onSubmitPost })
 	      );
 	    }
 
@@ -20165,9 +20176,8 @@
 	        };
 
 	        jQuery.post('/ajax/post', form, function (data, status) {
-	            console.log(status);
-	            console.log(data);
-	        }, 'json');
+	            this.props.onSubmitPost(data);
+	        }.bind(this), 'json');
 	    },
 	    onClickPlaceholder: function () {
 	        this.refs['content'].focus();
