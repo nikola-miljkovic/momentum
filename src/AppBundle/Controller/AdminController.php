@@ -83,7 +83,7 @@ class AdminController extends Controller
         if (in_array('ROLE_GOVERNMENT', $roles)) {
             $user->setRoles(array('ROLE_ADMIN'));
         } else if (in_array('ROLE_USER', $roles)) {
-            $user->setRoles(array('ROLE_GOVERNMENT', 'ROLE_USER'));
+            $user->setRoles(array('ROLE_GOVERNMENT'));
         }
 
         $em->merge($user);

@@ -42,8 +42,6 @@ var PostField = React.createClass({
     },
     onPaste: function(e) {
         var elem = this.refs['content'];
-
-        var savedcontent = elem.innerHTML;
         if (e && e.clipboardData && e.clipboardData.getData) {
             if (/text\/plain/.test(e.clipboardData.types)) {
                 elem.innerHTML = e.clipboardData.getData('text/plain');

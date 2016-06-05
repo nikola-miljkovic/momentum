@@ -20118,7 +20118,7 @@
 	  },
 	  render: function () {
 	    var input = null;
-	    if (this.state.loggedIn === true) {
+	    if (this.state.loggedIn === true || window.isGovernment === true) {
 	      input = React.createElement(
 	        'li',
 	        { className: 'list-group-item' },
@@ -20213,8 +20213,6 @@
 	    },
 	    onPaste: function (e) {
 	        var elem = this.refs['content'];
-
-	        var savedcontent = elem.innerHTML;
 	        if (e && e.clipboardData && e.clipboardData.getData) {
 	            if (/text\/plain/.test(e.clipboardData.types)) {
 	                elem.innerHTML = e.clipboardData.getData('text/plain');
@@ -20392,28 +20390,25 @@
 	            );
 	        }
 
-	        var voteButton = null;
-	        if (this.props.loggedIn) {
-	            voteButton = React.createElement(
+	        var voteButton = React.createElement(
+	            'span',
+	            null,
+	            React.createElement(PostVoteButton, { voted: this.state.voted, onClick: this.onVote.bind(this, this.props.id) }),
+	            React.createElement(
 	                'span',
-	                null,
-	                React.createElement(PostVoteButton, { voted: this.state.voted, onClick: this.onVote.bind(this, this.props.id) }),
+	                { className: 'vote-count' },
+	                React.createElement(
+	                    'small',
+	                    null,
+	                    '•'
+	                ),
 	                React.createElement(
 	                    'span',
-	                    { className: 'vote-count' },
-	                    React.createElement(
-	                        'small',
-	                        null,
-	                        '•'
-	                    ),
-	                    React.createElement(
-	                        'span',
-	                        { style: { padding: '0em 0.4em' } },
-	                        this.state.voteCount
-	                    )
+	                    { style: { padding: '0em 0.4em' } },
+	                    this.state.voteCount
 	                )
-	            );
-	        }
+	            )
+	        );
 
 	        return React.createElement(
 	            'li',

@@ -46,9 +46,7 @@ var PostListItem = React.createClass({
                     </a>;
         }
 
-        var voteButton = null;
-        if (this.props.loggedIn) {
-            voteButton = (
+        var voteButton = (
               <span>
                 <PostVoteButton voted={this.state.voted} onClick={this.onVote.bind(this, this.props.id)}></PostVoteButton>
                 <span className="vote-count">
@@ -57,7 +55,6 @@ var PostListItem = React.createClass({
                 </span>
               </span>
             );
-        }
 
         return (
             <li className="list-group-item">

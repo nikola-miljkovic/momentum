@@ -25,7 +25,7 @@ class AjaxController extends Controller
     /**
     * @Route("/post", name="post")
     * @Method({"POST"})
-    * @Security("is_granted('ROLE_USER')")
+    * @Security("is_granted('ROLE_USER') or is_granted('ROLE_GOVERNMENT')")
     */
     public function postAction(Request $request)
     {

@@ -98,7 +98,7 @@ var PostList = React.createClass({
     },
     render: function() {
         var input = null;
-        if (this.state.loggedIn === true) {
+        if (this.state.loggedIn === true || window.isGovernment === true) {
           input = <li className="list-group-item">
             <PostInput onSubmitPost={this.onSubmitPost}></PostInput>
           </li>;
