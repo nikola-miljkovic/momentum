@@ -20146,8 +20146,8 @@
 	        { className: 'list-group-item' },
 	        React.createElement(
 	          'button',
-	          { onClick: this.loadMore },
-	          'See more'
+	          { onClick: this.loadMore, className:'btn btn-default' },
+	          'Load more'
 	        )
 	      );
 	    }
@@ -20254,7 +20254,7 @@
 	                { className: 'row', style: buttonStyle },
 	                React.createElement(
 	                    'button',
-	                    { type: 'submit', className: 'post-button pull-right disabled' },
+	                    { type: 'submit', className: 'post-button  pull-right disabled' },
 	                    React.createElement('span', { className: 'glyphicon glyphicon-pencil', 'aria-hidden': 'true' }),
 	                    'Post!'
 	                )
@@ -20351,21 +20351,25 @@
 	            if (window.currentRoute === '_active') {
 	                button = React.createElement(
 	                    'a',
-	                    { href: '#', onClick: this.props.onClickDone },
-	                    'Set Done'
+	                    { href: '#',className: 'btn btn-success btn-circle pull-right ', onClick: this.props.onClickDone },
+						React.createElement('i',
+							{className: 'glyphicon glyphicon-ok '})
 	                );
 	            } else if (window.currentRoute === '_index' || window.currentRoute === '_popular') {
 	                button = React.createElement(
-	                    'a',
-	                    { href: '#', onClick: this.props.onClickInProgress },
-	                    'In progress'
+	                    'button',
+	                    { href: '#',className: 'btn btn-primary btn-circle pull-right ', onClick: this.props.onClickInProgress },
+						React.createElement('i',
+							{className: 'glyphicon glyphicon-cog '})
 	                );
 	            }
 	        }if (this.props.posted === '1') {
 	            button = React.createElement(
-	                'a',
-	                { href: '#', onClick: this.props.onDelete },
-	                'DELETE'
+	                'button',
+	                { href: '#',className: 'btn btn-warning btn-circle pull-right ', onClick: this.props.onDelete },
+					React.createElement('i',
+						{className: 'glyphicon glyphicon-remove '})
+
 	            );
 	        }
 
@@ -20397,7 +20401,7 @@
 	            { className: 'list-group-item' },
 	            React.createElement(
 	                'div',
-	                { className: 'well-card' },
+	                { className: 'well-card',style: { padding: '15px 15px 15px 15px',fontSize:'18px' }  },
 	                React.createElement(
 	                    'div',
 	                    { className: 'row' },
@@ -20416,7 +20420,7 @@
 	                        null,
 	                        React.createElement(
 	                            'p',
-	                            { className: 'lead-text' },
+	                            { className: 'lead-text' ,style: { padding: '15px 15px 25px 15px', fontSize:'18px' }},
 	                            this.props.content
 	                        )
 	                    )
@@ -20469,7 +20473,7 @@
 	    render: function () {
 	        var voteString = this.state.voted ? "Voted" : "Vote up";
 	        var buttonClass = classNames({
-	            'upvote-button': true,
+	            'upvote-button mycl': true,
 	            'voted': this.state.voted
 	        });
 
@@ -20480,7 +20484,7 @@
 	                className: buttonClass,
 	                onClick: this.onClick
 	            },
-	            React.createElement('span', { className: 'glyphicon glyphicon-chevron-up', 'aria-hidden': 'true' }),
+	            React.createElement('span', { className: 'mycl glyphicon glyphicon-chevron-up', 'aria-hidden': 'true' }),
 	            React.createElement(
 	                'span',
 	                { style: { padding: '0em 0.4em' } },
@@ -20507,10 +20511,10 @@
 
 	        return React.createElement(
 	            'a',
-	            { className: 'pull-left post-link', href: postLink },
+	            { className: 'pull-left post-link disabled mycl-id', href: '#' },
 	            React.createElement(
 	                'small',
-	                null,
+					null,
 	                '#',
 	                id
 	            )

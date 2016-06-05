@@ -28,7 +28,7 @@ var PostListItem = React.createClass({
                 button = <a href='#' onClick={this.props.onClickInProgress}>In progress</a>;
             }
         } if (this.props.posted === '1') {
-            button = <a href='#' onClick={this.props.onDelete}>DELETE</a>;
+            button = <a href='#q' class="btn btn-danger" onClick={this.props.onDelete}>X</a>;
         }
 
         var voteButton = null;
@@ -51,7 +51,10 @@ var PostListItem = React.createClass({
                         <div>
                             <PostLink id={this.props.id}></PostLink>
                         </div>
-                        {button}
+
+
+                            {button}
+
                     </div>
                     <div className="row">
                         <div>
