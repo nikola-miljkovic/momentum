@@ -30,4 +30,13 @@ class InProgressPostRepository extends EntityRepository
             ->getQuery()
             ->getScalarResult();
     }
+
+    public function countInProgressPosts()
+    {
+        return $this->createQueryBuilder('p')
+            ->select('count(p.post)')
+            ->where('p.active = true')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

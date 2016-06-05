@@ -119,4 +119,18 @@ class PostRepository extends EntityRepository
     {
         return $this->updateVoteCount($id, false);
     }
+
+    public function countRecentPosts()
+    {
+        $date = new \DateTime(date("F d Y H:i:s", time() - 86400));
+
+        return $this
+            ->createQueryBuilder('p')
+            ->select('count(p.id)')
+            ->where('p.postedAt > :date')
+            ->andWhere('p.active = true')
+            ->setParameter('date', $date->getTimestamp())
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

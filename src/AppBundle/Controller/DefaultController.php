@@ -28,7 +28,21 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $em = $this->getDoctrine();
+
+        $recentPosts = $em->getRepository('AppBundle:Post')
+            ->countRecentPosts();
+        
+        $inProgressPostCount = $em->getRepository('AppBundle:InProgressPost')
+            ->countInProgressPosts();
+        
+        $donePostCount = $em->getRepository('AppBundle:DonePost')
+            ->countDonePosts();
+        
         return $this->render('index.html.twig', array(
+            'recentPosts'=> $recentPosts,
+            'inProgress' => $inProgressPostCount,
+            'donePosts'  => $donePostCount,
             'postSource' => 'post_list_new'
         ));
     }
@@ -39,7 +53,21 @@ class DefaultController extends Controller
      */
     public function popularAction(Request $request)
     {
+        $em = $this->getDoctrine();
+
+        $recentPosts = $em->getRepository('AppBundle:Post')
+            ->countRecentPosts();
+
+        $inProgressPostCount = $em->getRepository('AppBundle:InProgressPost')
+            ->countInProgressPosts();
+
+        $donePostCount = $em->getRepository('AppBundle:DonePost')
+            ->countDonePosts();
+
         return $this->render('index.html.twig', array(
+            'recentPosts'=> $recentPosts,
+            'inProgress' => $inProgressPostCount,
+            'donePosts'  => $donePostCount,
             'postSource' => 'post_list_popular'
         ));
     }
@@ -50,7 +78,21 @@ class DefaultController extends Controller
      */
     public function activeAction(Request $request)
     {
+        $em = $this->getDoctrine();
+
+        $recentPosts = $em->getRepository('AppBundle:Post')
+            ->countRecentPosts();
+
+        $inProgressPostCount = $em->getRepository('AppBundle:InProgressPost')
+            ->countInProgressPosts();
+
+        $donePostCount = $em->getRepository('AppBundle:DonePost')
+            ->countDonePosts();
+
         return $this->render('index.html.twig', array(
+            'recentPosts'=> $recentPosts,
+            'inProgress' => $inProgressPostCount,
+            'donePosts'  => $donePostCount,
             'postSource' => 'post_list_active'
         ));
     }
@@ -60,7 +102,21 @@ class DefaultController extends Controller
      */
     public function doneAction(Request $request)
     {
+        $em = $this->getDoctrine();
+
+        $recentPosts = $em->getRepository('AppBundle:Post')
+            ->countRecentPosts();
+
+        $inProgressPostCount = $em->getRepository('AppBundle:InProgressPost')
+            ->countInProgressPosts();
+
+        $donePostCount = $em->getRepository('AppBundle:DonePost')
+            ->countDonePosts();
+
         return $this->render('index.html.twig', array(
+            'recentPosts'=> $recentPosts,
+            'inProgress' => $inProgressPostCount,
+            'donePosts'  => $donePostCount,
             'postSource' => 'post_list_done'
         ));
     }

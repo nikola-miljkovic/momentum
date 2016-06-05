@@ -22,4 +22,12 @@ class DonePostRepository extends EntityRepository
             ->getQuery()
             ->getScalarResult();
     }
+
+    public function countDonePosts()
+    {
+        return $this->createQueryBuilder('p')
+            ->select('count(p.post)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
