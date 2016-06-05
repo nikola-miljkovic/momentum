@@ -21,7 +21,6 @@ class PostRepository extends EntityRepository
                            AND v.user = :user_id)
                            as voted')
             ->where('p.id = :post_id')
-            ->andWhere('p.active = true')
             ->setParameter('post_id', $id)
             ->setParameter('user_id', $user->getId())
             ->setMaxResults(1)

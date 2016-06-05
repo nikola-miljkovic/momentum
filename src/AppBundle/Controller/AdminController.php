@@ -81,9 +81,9 @@ class AdminController extends Controller
         $roles = $user->getRoles();
 
         if (in_array('ROLE_GOVERNMENT', $roles)) {
-            $user->setRoles(array('ROLE_ADMIN', 'ROLE_GOVERNMENT'));
+            $user->setRoles(array('ROLE_ADMIN'));
         } else if (in_array('ROLE_USER', $roles)) {
-            $user->setRoles(array('ROLE_GOVERNMENT'));
+            $user->setRoles(array('ROLE_GOVERNMENT', 'ROLE_USER'));
         }
 
         $em->merge($user);
@@ -108,13 +108,8 @@ class AdminController extends Controller
                 'promoted' => false
             )));
 
-        $roles = $user->getRoles();
 
-        if (in_array('ROLE_GOVERNMENT', $roles)) {
-            $user->setRoles(array('ROLE_USER'));
-        } else if (in_array('ROLE_ADMIN', $roles)) {
-            $user->setRoles(array('ROLE_USER'));
-        }
+        $user->setRoles(array('ROLE_USER'));
 
         $em->merge($user);
         $em->flush();

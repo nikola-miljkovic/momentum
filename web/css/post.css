@@ -28,8 +28,10 @@ body{
     line-height: 1.33;
     border-radius: 35px;
 }
-.mycl{
-    font-size: 30px;
-    color: red;
-    background: green;
+.postdiv {
+    padding: 15px;
+    font-size: 18px;
+}
+.postlead {
+    padding: 10px 5px;
 }

@@ -6,7 +6,7 @@ var PostLink = React.createClass({
         var postLink = '/post/' + id;
         
         return (
-            <a className="pull-left post-link" href={postLink}><small>#{id}</small></a>
+            <a className="pull-left post-link disabled mycl-id" href={postLink}><small>#{id}</small></a>
         )
     }
 });

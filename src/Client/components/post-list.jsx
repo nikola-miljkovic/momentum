@@ -122,7 +122,7 @@ var PostList = React.createClass({
       if (this.state.loaded === true && !this.state.maxLoad) {
         loadMoreButton = (
             <li className="list-group-item">
-              <button class="btn btn-info" onClick={this.loadMore}>See more</button>
+              <button class="btn btn-default" onClick={this.loadMore}>Load more</button>
             </li>
           );
       }

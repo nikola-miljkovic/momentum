@@ -20,6 +20,7 @@ var VoteButton = React.createClass({
         var voteString = this.state.voted ? "Voted" : "Vote up";
         var buttonClass = classNames({
             'upvote-button': true,
+            'mycl': true,
             'voted': this.state.voted
         });
         
@@ -29,7 +30,7 @@ var VoteButton = React.createClass({
                 className={buttonClass}
                 onClick={this.onClick}
             >
-                <span className="glyphicon glyphicon-chevron-up" aria-hidden="true"/>
+                <span className="glyphicon glyphicon-chevron-up mycl" aria-hidden="true"/>
                 <span style={{padding: '0em 0.4em'}}>{voteString}</span>
             </a>
         )

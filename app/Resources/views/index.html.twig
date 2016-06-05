@@ -2,10 +2,12 @@
 
 {% block title %}Momentum{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/post.css') }}">
+{% endblock %}
 
 {% block body %}
     {% include 'navbar.html.twig' %}
-    <link rel="/css/post.css" type="text/css" href="{{ asset('css/post.css') }}">
     <div class="container">
         <div class="row content-field">
             <div id="post-list" class="col-md-offset-1 col-md-7">

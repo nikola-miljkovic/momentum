@@ -20,6 +20,7 @@ var PostField = React.createClass({
     },
     onInput: function() {
         console.log(this.getContent());
+
         this.setState({
             isEmpty: this.getContent().length === 0
         });
@@ -39,12 +40,25 @@ var PostField = React.createClass({
     onClickPlaceholder: function() {
         this.refs['content'].focus();
     },
+    onPaste: function(e) {
+        var elem = this.refs['content'];
+
+        var savedcontent = elem.innerHTML;
+        if (e && e.clipboardData && e.clipboardData.getData) {
+            if (/text\/plain/.test(e.clipboardData.types)) {
+                elem.innerHTML = e.clipboardData.getData('text/plain');
+            }
+            else {
+                elem.innerHTML = "";
+            }
+        }
+        e.preventDefault();
+    },
     getContent: function() {
         if (this.refs['content'] === undefined) return '';
-        return this.refs['content'].innerHTML;
+        return this.refs['content'].innerText;
     },
     render: function() {
-        console.log('pzzz');
         var placeholder = this.state.isEmpty ? 'Share your problem, suggestion or wish...' : '';
         var isFocusedOrNotEmpty = this.state.isFocused || !this.state.isEmpty;
         var buttonStyle = {
@@ -73,6 +87,7 @@ var PostField = React.createClass({
                     ref="content"
                     contentEditable="true"
                     onInput={this.onInput}
+                    onPaste={this.onPaste}
                     className={inputClasses}
                 >
                 </div>

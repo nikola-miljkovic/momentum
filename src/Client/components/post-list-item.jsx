@@ -23,12 +23,27 @@ var PostListItem = React.createClass({
         var button = null;
         if (window.isGovernment === true) {
             if (window.currentRoute === '_active') {
-                button = <a href='#' onClick={this.props.onClickDone}>Set Done</a>;
+                button = <a href="#"
+                            className="btn btn-success btn-circle pull-right"
+                            onClick={this.props.onClickDone}
+                            >
+                                <i className="glyphicon glyphicon-cog"/>
+                        </a>;
             } else if (window.currentRoute === '_index' || window.currentRoute === '_popular') {
-                button = <a href='#' onClick={this.props.onClickInProgress}>In progress</a>;
+                button = <a href="#"
+                            className="btn btn-primary btn-circle pull-right"
+                            onClick={this.props.onClickInProgress}
+                            >
+                                <i className="glyphicon glyphicon-cog"/>
+                        </a>;
             }
-        } if (this.props.posted === '1') {
-            button = <a href='#q' class="btn btn-danger" onClick={this.props.onDelete}>X</a>;
+        } else if (this.props.posted === '1') {
+            button = <a href="#"
+                        className="btn btn-warning btn-circle pull-right"
+                        onClick={this.props.onDelete}
+                        >
+                            <i className="glyphicon glyphicon-remove"/>
+                    </a>;
         }
 
         var voteButton = null;
@@ -46,25 +61,22 @@ var PostListItem = React.createClass({
 
         return (
             <li className="list-group-item">
-                <div className="well-card">
+                <div className="well-card postdiv">
                     <div className="row">
                         <div>
                             <PostLink id={this.props.id}></PostLink>
                         </div>
-
-
-                            {button}
-
+                        {button}
+                    </div>
+                    <div className="row">
+                        <p
+                          className="lead-text postlead"
+                        >
+                            {this.props.content}
+                        </p>
                     </div>
                     <div className="row">
                         <div>
-                            <p className="lead-text">
-                            {this.props.content}
-                            </p>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div>							
                             {voteButton}
                             <span className="pull-right date">{this.props.date}</span>
                         </div>

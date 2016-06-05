@@ -20146,7 +20146,7 @@
 	        { className: 'list-group-item' },
 	        React.createElement(
 	          'button',
-	          { onClick: this.loadMore, className:'btn btn-default' },
+	          { 'class': 'btn btn-default', onClick: this.loadMore },
 	          'Load more'
 	        )
 	      );
@@ -20191,6 +20191,7 @@
 	    },
 	    onInput: function () {
 	        console.log(this.getContent());
+
 	        this.setState({
 	            isEmpty: this.getContent().length === 0
 	        });
@@ -20210,12 +20211,24 @@
 	    onClickPlaceholder: function () {
 	        this.refs['content'].focus();
 	    },
+	    onPaste: function (e) {
+	        var elem = this.refs['content'];
+
+	        var savedcontent = elem.innerHTML;
+	        if (e && e.clipboardData && e.clipboardData.getData) {
+	            if (/text\/plain/.test(e.clipboardData.types)) {
+	                elem.innerHTML = e.clipboardData.getData('text/plain');
+	            } else {
+	                elem.innerHTML = "";
+	            }
+	        }
+	        e.preventDefault();
+	    },
 	    getContent: function () {
 	        if (this.refs['content'] === undefined) return '';
-	        return this.refs['content'].innerHTML;
+	        return this.refs['content'].innerText;
 	    },
 	    render: function () {
-	        console.log('pzzz');
 	        var placeholder = this.state.isEmpty ? 'Share your problem, suggestion or wish...' : '';
 	        var isFocusedOrNotEmpty = this.state.isFocused || !this.state.isEmpty;
 	        var buttonStyle = {
@@ -20247,6 +20260,7 @@
 	                ref: 'content',
 	                contentEditable: 'true',
 	                onInput: this.onInput,
+	                onPaste: this.onPaste,
 	                className: inputClasses
 	            }),
 	            React.createElement(
@@ -20254,7 +20268,7 @@
 	                { className: 'row', style: buttonStyle },
 	                React.createElement(
 	                    'button',
-	                    { type: 'submit', className: 'post-button  pull-right disabled' },
+	                    { type: 'submit', className: 'post-button pull-right disabled' },
 	                    React.createElement('span', { className: 'glyphicon glyphicon-pencil', 'aria-hidden': 'true' }),
 	                    'Post!'
 	                )
@@ -20351,25 +20365,30 @@
 	            if (window.currentRoute === '_active') {
 	                button = React.createElement(
 	                    'a',
-	                    { href: '#',className: 'btn btn-success btn-circle pull-right ', onClick: this.props.onClickDone },
-						React.createElement('i',
-							{className: 'glyphicon glyphicon-ok '})
+	                    { href: '#',
+	                        className: 'btn btn-success btn-circle pull-right',
+	                        onClick: this.props.onClickDone
+	                    },
+	                    React.createElement('i', { className: 'glyphicon glyphicon-cog' })
 	                );
 	            } else if (window.currentRoute === '_index' || window.currentRoute === '_popular') {
 	                button = React.createElement(
-	                    'button',
-	                    { href: '#',className: 'btn btn-primary btn-circle pull-right ', onClick: this.props.onClickInProgress },
-						React.createElement('i',
-							{className: 'glyphicon glyphicon-cog '})
+	                    'a',
+	                    { href: '#',
+	                        className: 'btn btn-primary btn-circle pull-right',
+	                        onClick: this.props.onClickInProgress
+	                    },
+	                    React.createElement('i', { className: 'glyphicon glyphicon-cog' })
 	                );
 	            }
-	        }if (this.props.posted === '1') {
+	        } else if (this.props.posted === '1') {
 	            button = React.createElement(
-	                'button',
-	                { href: '#',className: 'btn btn-warning btn-circle pull-right ', onClick: this.props.onDelete },
-					React.createElement('i',
-						{className: 'glyphicon glyphicon-remove '})
-
+	                'a',
+	                { href: '#',
+	                    className: 'btn btn-warning btn-circle pull-right',
+	                    onClick: this.props.onDelete
+	                },
+	                React.createElement('i', { className: 'glyphicon glyphicon-remove' })
 	            );
 	        }
 
@@ -20401,7 +20420,7 @@
 	            { className: 'list-group-item' },
 	            React.createElement(
 	                'div',
-	                { className: 'well-card',style: { padding: '15px 15px 15px 15px',fontSize:'18px' }  },
+	                { className: 'well-card postdiv' },
 	                React.createElement(
 	                    'div',
 	                    { className: 'row' },
@@ -20416,13 +20435,11 @@
 	                    'div',
 	                    { className: 'row' },
 	                    React.createElement(
-	                        'div',
-	                        null,
-	                        React.createElement(
-	                            'p',
-	                            { className: 'lead-text' ,style: { padding: '15px 15px 25px 15px', fontSize:'18px' }},
-	                            this.props.content
-	                        )
+	                        'p',
+	                        {
+	                            className: 'lead-text postlead'
+	                        },
+	                        this.props.content
 	                    )
 	                ),
 	                React.createElement(
@@ -20473,7 +20490,8 @@
 	    render: function () {
 	        var voteString = this.state.voted ? "Voted" : "Vote up";
 	        var buttonClass = classNames({
-	            'upvote-button mycl': true,
+	            'upvote-button': true,
+	            'mycl': true,
 	            'voted': this.state.voted
 	        });
 
@@ -20484,7 +20502,7 @@
 	                className: buttonClass,
 	                onClick: this.onClick
 	            },
-	            React.createElement('span', { className: 'mycl glyphicon glyphicon-chevron-up', 'aria-hidden': 'true' }),
+	            React.createElement('span', { className: 'glyphicon glyphicon-chevron-up mycl', 'aria-hidden': 'true' }),
 	            React.createElement(
 	                'span',
 	                { style: { padding: '0em 0.4em' } },
@@ -20511,10 +20529,10 @@
 
 	        return React.createElement(
 	            'a',
-	            { className: 'pull-left post-link disabled mycl-id', href: '#' },
+	            { className: 'pull-left post-link disabled mycl-id', href: postLink },
 	            React.createElement(
 	                'small',
-					null,
+	                null,
 	                '#',
 	                id
 	            )
