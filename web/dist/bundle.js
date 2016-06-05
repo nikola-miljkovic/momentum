@@ -20038,6 +20038,7 @@
 	    return {
 	      loaded: false,
 	      loggedIn: this.props.user >= 0,
+	      maxLoad: false,
 	      posts: []
 	    };
 	  },
@@ -20092,15 +20093,28 @@
 	    }.bind(this));
 	  },
 	  onSubmitPost: function (data) {
-	    console.log(data);
 	    var newPost = JSON.parse(data);
-	    console.log(newPost);
-	    newPost.posted = '1';
-	    this.state.posts.unshift(newPost);
+	    if (newPost.message !== undefined) {
+	      // TODO: process error message
+	    } else {
+	        console.log(newPost);
+	        newPost.posted = '1';
 
-	    this.setState({
-	      posts: this.state.posts
-	    });
+	        this.state.posts.unshift(newPost);
+	        this.setState({
+	          posts: this.state.posts
+	        });
+	      }
+	  },
+	  loadMore: function () {
+	    this.serverRequest = $.get(this.props.source + "/" + this.state.posts.length, function (result) {
+	      var newPosts = JSON.parse(result);
+	      this.setState({
+	        loaded: true,
+	        posts: this.state.posts.concat(newPosts),
+	        maxLoad: newPosts.length % 10 !== 0 || newPosts.length == 0
+	      });
+	    }.bind(this));
 	  },
 	  render: function () {
 	    var input = null;
@@ -20119,16 +20133,30 @@
 	          key: post.id,
 	          onDelete: this.onDeletePost.bind(this, post.id),
 	          onClickDone: this.onClickDone.bind(this, post.id),
-	          onClickInProgress: this.onClickInProgress.bind(this, post.id)
+	          onClickInProgress: this.onClickInProgress.bind(this, post.id),
+	          loggedIn: this.state.loggedIn
 	        }, post));
 	      }.bind(this));
 	    }
 
+	    var loadMoreButton = null;
+	    if (this.state.loaded === true && !this.state.maxLoad) {
+	      loadMoreButton = React.createElement(
+	        'li',
+	        { className: 'list-group-item' },
+	        React.createElement(
+	          'button',
+	          { onClick: this.loadMore },
+	          'See more'
+	        )
+	      );
+	    }
 	    return React.createElement(
 	      'ul',
 	      { className: 'list-group' },
 	      input,
-	      list
+	      list,
+	      loadMoreButton
 	    );
 	  }
 	});
@@ -20341,6 +20369,29 @@
 	            );
 	        }
 
+	        var voteButton = null;
+	        if (this.props.loggedIn) {
+	            voteButton = React.createElement(
+	                'span',
+	                null,
+	                React.createElement(PostVoteButton, { voted: this.state.voted, onClick: this.onVote.bind(this, this.props.id) }),
+	                React.createElement(
+	                    'span',
+	                    { className: 'vote-count' },
+	                    React.createElement(
+	                        'small',
+	                        null,
+	                        '•'
+	                    ),
+	                    React.createElement(
+	                        'span',
+	                        { style: { padding: '0em 0.4em' } },
+	                        this.state.voteCount
+	                    )
+	                )
+	            );
+	        }
+
 	        return React.createElement(
 	            'li',
 	            { className: 'list-group-item' },
@@ -20376,21 +20427,7 @@
 	                    React.createElement(
 	                        'div',
 	                        null,
-	                        React.createElement(PostVoteButton, { voted: this.state.voted, onClick: this.onVote.bind(this, this.props.id) }),
-	                        React.createElement(
-	                            'span',
-	                            { className: 'vote-count' },
-	                            React.createElement(
-	                                'small',
-	                                null,
-	                                '•'
-	                            ),
-	                            React.createElement(
-	                                'span',
-	                                { style: { padding: '0em 0.4em' } },
-	                                this.state.voteCount
-	                            )
-	                        ),
+	                        voteButton,
 	                        React.createElement(
 	                            'span',
 	                            { className: 'pull-right date' },
