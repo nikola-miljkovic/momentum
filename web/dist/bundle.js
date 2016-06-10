@@ -20146,7 +20146,7 @@
 	        { className: 'list-group-item' },
 	        React.createElement(
 	          'button',
-	          { 'class': 'btn btn-default', onClick: this.loadMore },
+	          { 'class': 'btn btn-info', onClick: this.loadMore },
 	          'Load more'
 	        )
 	      );
