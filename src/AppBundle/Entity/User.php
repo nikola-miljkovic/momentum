@@ -161,6 +161,8 @@ class User implements UserInterface, \Serializable
         $this->lastName = $lastName;
     }
 
+
+    
     /**
      * String representation of object
      * @link http://php.net/manual/en/serializable.serialize.php
@@ -193,5 +195,6 @@ class User implements UserInterface, \Serializable
             $this->password,
         ) = unserialize($serialized);
     }
+
     
 }
