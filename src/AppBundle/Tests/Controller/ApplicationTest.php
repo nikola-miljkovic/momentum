@@ -52,4 +52,28 @@ class ApplicationTest extends WebTestCase
             $em->flush();
         }
     }
+
+    public function testNavigation()
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertContains('New', $crawler->filter('.active.nav-font')->text());
+
+        $crawler = $client->request('GET', '/popular');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertContains('Popular', $crawler->filter('.active.nav-font')->text());
+    }
+
+    public function testAdmin()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/admin');
+
+        $this->assertEquals(301, $client->getResponse()->getStatusCode());
+    }
 }
