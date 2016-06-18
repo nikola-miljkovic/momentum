@@ -20146,7 +20146,7 @@
 	        { className: 'list-group-item' },
 	        React.createElement(
 	          'button',
-	          { 'class': 'btn btn-default', onClick: this.loadMore },
+	          { 'class': 'btn btn-info', onClick: this.loadMore },
 	          'Load more'
 	        )
 	      );
@@ -20383,7 +20383,7 @@
 	            button = React.createElement(
 	                'a',
 	                { href: '#',
-	                    className: 'btn btn-warning btn-circle pull-right',
+	                    className: 'btn btn-warning btn-circle pull-rightF',
 	                    onClick: this.props.onDelete
 	                },
 	                React.createElement('i', { className: 'glyphicon glyphicon-remove' })
@@ -20415,7 +20415,7 @@
 	            { className: 'list-group-item' },
 	            React.createElement(
 	                'div',
-	                { className: 'well-card postdiv' },
+	                { className: 'well-card postdiv post-text-style ',style: { fontSize: 'medium', padding: '20px' } },
 	                React.createElement(
 	                    'div',
 	                    { className: 'row' },

@@ -8,9 +8,7 @@
     <div class="container">
             <div class="row main-slider">
                 <div class="col-sm-6">
-                    {{ form_start(formPost) }}
-                        {{ form_widget(formPost.searchPost) }}
-                    {{ form_end(formPost) }}
+
                  <hr> 
                  <ul>
                     {% for post in posts %}
@@ -40,9 +38,7 @@
             
             </div>
             <div class="col-sm-6">
-                {{ form_start(formUser) }}
-                    {{ form_widget(formUser.searchUser) }}
-                {{ form_end(formUser) }}
+
                 <hr>
                 <ul>
                     {% for user in users %}
@@ -75,5 +71,8 @@
             <div class="col-sm-4">&nbsp</div>
         </div>
     </div>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/dist/bundle.js"></script>
 {% endblock %}
 
