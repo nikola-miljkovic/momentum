@@ -20367,7 +20367,7 @@
 	                        className: 'btn btn-success btn-circle pull-right',
 	                        onClick: this.props.onClickDone
 	                    },
-	                    React.createElement('i', { className: 'glyphicon glyphicon-cog' })
+	                    React.createElement('i', { className: 'glyphicon glyphicon-ok' })
 	                );
 	            } else if (window.currentRoute === '_index' || window.currentRoute === '_popular') {
 	                button = React.createElement(
@@ -20383,7 +20383,7 @@
 	            button = React.createElement(
 	                'a',
 	                { href: '#',
-	                    className: 'btn btn-warning btn-circle pull-rightF',
+	                    className: 'btn btn-warning btn-circle pull-right',
 	                    onClick: this.props.onDelete
 	                },
 	                React.createElement('i', { className: 'glyphicon glyphicon-remove' })
