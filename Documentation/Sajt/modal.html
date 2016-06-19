@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Momentum</title>
+		<!--Nikola Miljkovic-->
+		<meta name ="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+	</head>
+	<body>
+
+		<div class ="navbar navbar-inverse navbar-static-top" id = "navigationBar">
+			
+			<div class = "container">
+				<a href="#" class= "navbar-brand"><b style="font-family:verdana" style="font-size:10px">MOMENTUM</b></a>
+				<button class= "navbar-toggle" data-toggle = "collapse" data-target = ".navbarHeaderCollapse"></button>
+				<div class ="collapse navbar-collapse navHeaderCollapse">
+					<ul class = "nav navbar-nav navbar-right">
+						<li class = "active"><a href ="index.html">New</a></li>
+						<li><a href="popular.html">Popular</a></li>
+						<li><a href="inprogress.html">In Progress</a></li>
+						<li><a href="done.html">Done</a></li>
+						<li><img src="pictures/logo2.png" class="img-responsive" style="width:40px"></li>
+						<li><a href="login.html">Log In</a></li>
+						<li><a href="register.html">Register</a></li>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div>
+
+
+
+<a href="#popUpWindow" type="button" class="btn btn-success" data-toggle="modal">LogIn</a>
+
+<div class ="modal fade" id="popUpWindow">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times</button>
+				<h3 class="modal-title">Log In</h3>
+			</div>
+
+			<div class="modal-body">
+				<form role="form">
+					<div class="form-group">
+					    <label class="control-label col-sm-3" for="username">Username:</label>
+					    <div class="col-sm-9">
+					      <input type="text" class="form-control" id="username" placeholder="Username">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label class="control-label col-sm-3" for="pwd">Password:</label>
+					    <div class="col-sm-9"> 
+					      <input type="password" class="form-control" id="pwd" placeholder="Enter password">
+					    </div>
+					  </div>
+				</form>
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-primary btn-block">Log In</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+		</div>
+
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		
+		<script type="js/bootstrap.js"></script>
+
+	</body>
+</html>
